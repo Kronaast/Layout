@@ -1,0 +1,638 @@
+<!doctype html>
+<script>
+  // If you want to use the layout with another pokemon change this variable
+  // the pokemon name must be all lower case
+  let pokemonName = "azumarill";
+  // If you want to change the layout to another generation change the next two variables,
+  // they must be congruent, it will not work if you put "emerald" and "generation-i" for example
+
+  // The next variable if for the game, it must be all lower case
+  // posible values are:
+  // "red-blue", "yellow", 
+  // "crystal", "gold", "silver"
+  // "emerald", "ruby-sapphire", "firered-leafgreen"
+  // "diamond-pearl", "heartgold-soulsilver", "platinum"
+  // "black-white"
+  // "omegaruby-alphasapphire", "x-y"
+  // for sun/moon use "icons", for ultra sun/moon use "ultra-sun-ultra-moon"
+  let game = "crystal";
+  // The next variable if for the game, it must be all lower case
+  // posible values are:
+  // false if you don't want the pokemon sprite in the layout is useful if you want to use another image 
+  // "auto" if you want the pokemon image to be the sprite for the game you are playing
+  // "manual" if you want to use a custom image, this image has to be placed in the "Pictures" folder and has to be called "Pokemon.png"
+  let enableImg = "auto";
+
+
+  // YOU DON'T NEED TO TOUCH TEH NEXT VARIABLES,
+  // IF YOU DO IT'S AT YOUR OWN RISK
+
+
+  let gameGen = {
+    'red-blue': 'generation-i',
+    yellow: 'generation-i',
+    crystal: 'generation-ii',
+    gold: 'generation-ii',
+    silver: 'generation-ii',
+    'ruby-sapphire': 'generation-iii',
+    emerald: 'generation-iii',
+    'firered-leafgreen': 'generation-iii',
+    'diamond-pearl': 'generation-iv',
+    'heartgold-soulsilver': 'generation-iv',
+    'platinum': 'generation-iv',
+    'black-white': 'generation-v',
+    'omegaruby-alphasapphire': 'generation-vi',
+    'x-y': 'generation-vi',
+    icons: 'generation-vii',
+    'ultra-sun-ultra-moon': 'generation-vii'
+  };
+
+  let generation = gameGen[game];
+  let firstGens = ['generation-i', 'generation-ii', 'generation-iii', 'generation-iv', 'generation-v'];
+  let typeColors = {
+    normal: ['#A8A878', '#6D6D4E', '#C8C898'],
+    fire: ['#F08030', '#9C531F', '#F0A050'],
+    fighting: ['#C03028', '#7D1F1A', '#E05048'],
+    water: ['#6890F0', '#445E9C', '#88B0F0'],
+    flying: ['#A890F0', '#6D5E9C', '#C8B0F0'],
+    grass: ['#78C850', '#4E8234', '#98E870'],
+    poison: ['#A040A0', '#682A68', '#A040A0'],
+    electric: ['#F8D030', '#A1871F', '#F8F050'],
+    ground: ['#E0C068', '#927D44', '#F0E088'],
+    psychic: ['#F85888', '#A13959', '#F878A8'],
+    rock: ['#B8A038', '#786824', '#D8C058'],
+    ice: ['#98D8D8', '#638D8D', '#B8F8F8'],
+    bug: ['#A8B820', '#6D7815', '#B8C830'],
+    dragon: ['#6D7815', '#4924A1', '#8D9835'],
+    ghost: ['#705898', '#493963', '#9078B8'],
+    dark: ['#705848', '#49392F', '#907868'],
+    steel: ['#B8B8D0', '#787887', '#D8D8F0'],
+    fairy: ['#EE99AC', '#9B6470', '#fEB9CC'],
+  };
+</script>
+<script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+<script src="https://unpkg.com/vue@latest/dist/vue.global.js"></script>
+<script src="http://localhost:8085/dist/gameHookMapperClient.js"></script>
+
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Kronaast Layout</title>
+</head>
+
+<body onload='generateLayout()'>
+  <style>
+    body {
+      background-image: url('Pictures/Background.png');
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: cover;
+    }
+  </style>
+  
+  <div>
+    <p id="demo"></p>
+    <table id="app" style="border: 10px; white-space:nowrap; position: absolute; left: 50px; bottom: 100px">
+      <tbody>
+        <tr style="background: #FF5959; text-align:center">
+          <th style="width:85px; padding-left:0.5em; padding-right:0.5em">
+            
+            <div style="float:left"><span style="color:#000;">HP:</span></div>
+            <div style="float:right">
+              <t id='hp'> </t>
+            </div>
+          </th>
+          <td style="width:100px">
+            <div id="HPBase" class="statbar" style="background-color: #FF0000; border: 1px solid #A60000; height:20px">
+            </div>
+          </td>
+        </tr>
+        <tr style="background: #F5AC78; text-align:center">
+          <th style="width:85px; padding-left:0.5em; padding-right:0.5em">
+            <div style="float:left"><span style="color:#000;">Attack:</span></div>
+            <div style="float:right">
+              <t id='attack'></t>
+            </div>
+          </th>
+          <td style="width:100px">
+            <div id="attackBase" class="statbar"
+              style="background-color: #F08030; border: 1px solid #9C531F; height:20px"></div>
+          </td>
+        </tr>
+        <tr style="background: #FAE078; text-align:center">
+          <th style="width:85px; padding-left:0.5em; padding-right:0.5em">
+            <div style="float:left"><span style="color:#000;">Defense:</span></div>
+            <div style="float:right">
+              <t id='defense'></t>
+            </div>
+          </th>
+          <td style="width:100px">
+            <div id="defenseBase" class="statbar"
+              style="background-color: #F8D030; border: 1px solid #A1871F; height:20px"></div>
+          </td>
+        </tr>
+        <tr style="background: #9DB7F5; text-align:center">
+          <th style="width:85px; padding-left:0.5em; padding-right:0.5em">
+            <div style="float:left"><span style="color:#000;">Sp. Atk:</span></div>
+            <div style="float:right">
+              <t id='specialAttack'></t>
+            </div>
+          </th>
+          <td style="width:100px">
+            <div id="specialAttackBase" class="statbar"
+              style="background-color: #6890F0; border: 1px solid #445E9C; height:20px"></div>
+          </td>
+        </tr>
+        <tr style="background: #A7DB8D; text-align:center">
+          <th style="width:85px; padding-left:0.5em; padding-right:0.5em">
+            <div style="float:left"><span style="color:#000;">Sp. Def:</span></div>
+            <div style="float:right">
+              <t id='specialDefense'></t>
+            </div>
+          </th>
+          <td style="width:100px">
+            <div id="specialDefenseBase" class="statbar"
+              style="background-color: #78C850; border: 1px solid #4E8234; height:20px"></div>
+          </td>
+        </tr>
+        <tr style="background: #FA92B2; text-align:center">
+          <th style="width:85px; padding-left:0.5em; padding-right:0.5em">
+            <div style="float:left"><span style="color:#000;">Speed:</span></div>
+            <div style="float:right">
+              <t id='speed'></t>
+            </div>
+          </th>
+          <td style="width:100px">
+            <div id="speedBase" class="statbar"
+              style="background-color: #F85888; border: 1px solid #A13959; height:20px"></div>
+          </td>
+        </tr>
+        <tr style="background: #A7DB8D;">
+          <th style="width:85px; padding-left:0.5em; padding-right:0.5em">
+            <div style="float:left">Total:</div>
+            <div style="float:right">
+              <t id='statTotal'></t>
+            </div>
+          </th>
+          <td style="width:100px">
+            <div id="statTotalBase" class="statbar"
+              style="background-color: #898989; border: 1px solid #000000; height:20px"></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <script type="text/javascript">
+      function compare(a, b) {
+        if (a.Number < b.Number) {
+          return -1;
+        }
+        if (a.Number > b.Number) {
+          return 1;
+        } else {
+          return 0;
+        }
+      }
+
+      function capitalize(word) {
+        return word[0].toUpperCase() + word.slice(1);
+      }
+
+      const mapper = new GameHookMapperClient()
+
+      async function generateLayout() {
+        // Establish a connection to GameHook.
+        await mapper.connect()
+        
+        // You can then access properties you see in GameHook via mapper.properties.
+        const prop = mapper.properties.player.name;
+        console.info(`Your name is ${mapper.properties.player.name}.`)
+      
+        app.style.zoom = "2";
+
+        let httpRequest = new XMLHttpRequest();
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "https://pokeapi.co/api/v2/pokemon/" + pokemonName, false);
+        xhttp.send();
+        var json = xhttp.responseText;
+        const obj = JSON.parse(json);
+
+        var baseHP = obj.stats[0].base_stat;
+        var baseAttack = obj.stats[1].base_stat;
+        var baseDefense = obj.stats[2].base_stat;
+        var baseSpecialAttack = obj.stats[3].base_stat;
+        var baseSpecialDefense = obj.stats[4].base_stat;
+        var baseSpeed = obj.stats[5].base_stat;
+        var statTotal = baseHP + baseAttack + baseDefense + baseSpecialAttack + baseSpecialDefense + baseSpeed;
+
+        document.getElementById('hp').innerHTML = baseHP;
+        document.getElementById('attack').innerHTML = baseAttack;
+        document.getElementById('defense').innerHTML = baseDefense;
+        document.getElementById('specialAttack').innerHTML = baseSpecialAttack;
+        document.getElementById('specialDefense').innerHTML = baseSpecialDefense;
+        document.getElementById('speed').innerHTML = baseSpeed;
+        document.getElementById('statTotal').innerHTML = statTotal;
+        document.getElementById('HPBase').style.width = baseHP / 255 * 100 + "%";
+        document.getElementById('attackBase').style.width = baseAttack / 255 * 100 + "%";
+        document.getElementById('defenseBase').style.width = baseDefense / 255 * 100 + "%";
+        document.getElementById('specialAttackBase').style.width = baseSpecialAttack / 255 * 100 + "%";
+        document.getElementById('specialDefenseBase').style.width = baseSpecialDefense / 255 * 100 + "%";
+        document.getElementById('speedBase').style.width = baseSpeed / 255 * 100 + "%";
+        document.getElementById('statTotalBase').style.width = statTotal / 720 * 100 + "%";
+
+        const tblStats = document.createElement("table");
+        const tblBodyStats = document.createElement("tbody");
+        const divStats = document.createElement("div");
+
+        tblStats.style.border = '10px';
+        tblStats.style.whiteSpace = 'nowrap';
+        tblStats.style.position = 'absolute';
+        tblStats.style.left = '50 px';
+        tblStats.style.bottom = '100px';
+
+        var trStats = document.createElement("tr");
+        var thStats = document.createElement("td");
+        trStats.style.background = '#FF5959';
+        trStats.style.textAlign = 'center'
+        thStats.style.width = '85px';
+        thStats.style.paddingLeft = '0.5em';
+        thStats.style.paddingRight = '0.5em';
+
+        var div1 = document.createElement("div");
+        var div2 = document.createElement("div");
+        var span = document.createElement("span");
+        var t = document.createElement("t");
+        var tText = document.createTextNode('HP:');
+        var td = document.createElement("td");
+        var cellText = document.createTextNode(baseHP);
+        var div3 = document.createElement("div");
+        div1.style.float = 'left';
+        span.style.color = '#000';
+        div2.style.float = 'right';
+        td.style.width = '100px';
+        div3.style.backgroundColor = '#FF0000';
+        div3.style.border = '1px solid #A60000';
+        div3.style.height = '20px';
+        div3.classList.add('statbar');
+          
+        
+         
+        t.appendChild(tText);
+        div1.appendChild(t);
+        div2.appendChild(cellText);
+        trStats.appendChild(thStats);
+        td.appendChild(div3);
+        tblBodyStats.appendChild(trStats);
+        tblBodyStats.appendChild(trStats);
+        tblStats.appendChild(tblBodyStats);
+        divStats.appendChild(tblStats);
+        // appends <table> into <body>
+        document.body.appendChild(divStats);
+
+        // creates a <table> element and a <tbody> element
+        const tbl = document.createElement("table");
+        const tblBody = document.createElement("tbody");
+        const div = document.createElement("div");
+        var seenMoves = [];
+        var selectedMove;
+        tbl.setAttribute("border", "3");
+
+        tbl.style.borderCollapse = 'collapse';
+        div.style.height = '100%';
+        div.style.position = 'absolute';
+        div.style.display = 'flex';
+        div.style.alignItems = 'center';
+        div.style.right = '70px';
+
+        var movesNum = obj.moves.length;
+        var movesSize;
+        // Checks whether the pokemon can learn very few moves(ditto, beldum, wurmple...) or a lot
+        if (movesNum < 10) {
+          movesSize = 1.5;
+        } else {
+          // I find this function handles large movepools decently well, might not be soo good with mid sizes
+          movesSize = 2.8 / (Math.log(movesNum) / Math.LN10);
+        }
+
+        // add the pokemon image to the top-left of the layout
+        var img = document.createElement("img");
+        // if gen 1 or 2 the image name changes 
+        if (enableImg == "auto") {
+          if (generation == "generation-i" || generation == "generation-ii") {
+            img.src = (obj.sprites.versions[generation][game].front_transparent);
+          } else {
+            img.src = (obj.sprites.versions[generation][game].front_default);
+          }
+          img.style.width = '200px';
+          img.style.height = '200px';
+          img.style.position = ("absolute");
+          img.style.display = ("flex");
+          document.body.appendChild(img);
+        } else {
+          if (enableImg == "manual") {
+            img.src = ('Pictures/Pokemon.png');
+            img.style.width = '200px';
+            img.style.height = '200px';
+            img.style.position = ("absolute");
+            img.style.display = ("flex");
+            document.body.appendChild(img);
+          }
+        }
+
+        // this is because imges are different but moves are not
+        if (game == 'silver' || game == 'gold') {
+          game = 'gold-silver';
+        }
+
+        // Drawing the type squared under the pokemon picture
+        var monoType = true;
+        // Check if the pokemon changed types (fairy) and we are doing it for before gen6
+        // if so use the old types
+        // This can get confusing with pokemons that gain/replace types
+        if ((obj.past_types[0]) != null && firstGens.includes(generation)) {
+          // Checks if a pokemon is monotype 
+          if (obj.past_types.length == 1) {
+            var type = obj.past_types[0].types[0].type.name;
+          } else {
+            monoType = false;
+            var type = obj.past_types[0].types[0].type.name;
+            var type2 = obj.past_types[0].types[1].type.name;
+          }
+          // otherwise use the regualr types
+        } else {
+          if (obj.types.length == 1) {
+            var type = obj.types[0].type.name;
+          } else {
+            monoType = false;
+            var type = obj.types[0].type.name;
+            var type2 = obj.types[1].type.name;
+          }
+        }
+
+        if (monoType) {
+          app.style.background = typeColors[type][0];
+          app.style.border = "3px solid " + typeColors[type][0];
+          tbl.style.background = typeColors[type][2];
+          tbl.style.border = "5px solid " + typeColors[type][1];
+          var typeBox = document.createElement("p");
+          var Bold = document.createElement("b");
+          var cellText = document.createTextNode(`${capitalize(type)}`);
+
+          typeBox.style.fontSize = ("xx-large");
+          typeBox.style.color = ("white");
+          typeBox.style.borderRadius = "10px";
+          typeBox.style.background = (typeColors[type][0]);
+          typeBox.style.padding = ("5px");
+          typeBox.style.display = ("flex");
+          typeBox.style.position = ("absolute");
+          typeBox.style.top = "200px";
+          typeBox.style.left = "50px";
+          typeBox.style.justifyContent = ("center");
+          typeBox.style.width = '10%';
+          Bold.appendChild(cellText);
+          typeBox.appendChild(Bold);
+          document.body.appendChild(typeBox);
+        } else {
+          app.style.background = typeColors[type2][0];
+          app.style.border = "3px solid " + typeColors[type][0];
+          tbl.style.background = typeColors[type2][2];
+          tbl.style.border = "5px solid " + typeColors[type][1];
+          var typeBox = document.createElement("p");
+          var Bold = document.createElement("b");
+          var cellText = document.createTextNode(`${capitalize(type)}`);
+
+          var typeBox2 = document.createElement("p");
+          var Bold2 = document.createElement("b");
+          var cellText2 = document.createTextNode(`${capitalize(type2)}`);
+
+          typeBox.style.fontSize = ("x-large");
+          typeBox.style.color = ("white");
+          typeBox.style.borderRadius = "10px";
+          typeBox.style.background = (typeColors[type][0]);
+          typeBox.style.padding = ("5px");
+          typeBox.style.display = ("flex");
+          typeBox.style.position = ("absolute");
+          typeBox.style.top = "200px";
+          typeBox.style.left = "15px";
+          typeBox.style.justifyContent = ("center");
+          typeBox.style.width = '5%';
+          Bold.appendChild(cellText);
+          typeBox.appendChild(Bold);
+
+          typeBox2.style.fontSize = ("x-large");
+          typeBox2.style.color = ("white");
+          typeBox2.style.borderRadius = "10px";
+          typeBox2.style.background = (typeColors[type2][0]);
+          typeBox2.style.padding = ("5px");
+          typeBox2.style.display = ("flex");
+          typeBox2.style.position = ("absolute");
+          typeBox2.style.top = "200px";
+          typeBox2.style.left = "130px";
+          typeBox2.style.justifyContent = ("center");
+          typeBox2.style.width = '5%';
+          Bold2.appendChild(cellText2);
+          typeBox2.appendChild(Bold2);
+
+          document.body.appendChild(typeBox);
+          document.body.appendChild(typeBox2);
+        }
+
+        var Moves = [];
+        var moveType;
+        var counter = 0;
+        // creating all cells
+        //For every move the pokemon can learn
+
+        for (let i = 0; i < movesNum; i++) {     
+          xhttp.open("GET", obj.moves[i].move.url, false);
+          xhttp.send();
+          var machineJson = xhttp.responseText;
+          var machineMove = JSON.parse(machineJson);
+          for (let j = 0; j < obj.moves[i].version_group_details.length; j++) {
+            // ht will contain the moves i am interested in 
+            var ht = {};                                                                              
+            var selectedMove = obj.moves[i].version_group_details[j].version_group.name;
+            var learnMethod = obj.moves[i].version_group_details[j].move_learn_method.name;
+            var moveName = obj.moves[i].move.name;
+            if (selectedMove == game && !(seenMoves.includes(moveName)) && (learnMethod != "egg")) {
+              // seen moves contains all moves i have alteady passed so i don't put the same move multiple types
+              seenMoves.push(moveName);
+              ht.LearnMethod = learnMethod;
+              if (learnMethod == "level-up") {
+                ht.Number = obj.moves[i].version_group_details[j].level_learned_at;
+              } else {
+                if (learnMethod == "machine") {
+                  ht.Number = 100 + machineMove.id;
+                } else {
+                  ht.Number = 1000 + machineMove.id;
+                }
+              }
+              ht.Name = machineMove.name;
+              ht.Type = machineMove.type.name;
+              ht.Power = machineMove.power;
+              ht.Accuracy = machineMove.accuracy;
+              ht.PP = machineMove.pp;
+              Moves[counter++] = ht;
+            }
+          }
+        }
+        Moves.sort(compare);
+        // Adding the first line of header to the table
+        // lvl
+        var row = document.createElement("tr");
+        var cell = document.createElement("td");
+        var cellText = document.createTextNode('Lvl.');
+        var Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        cell.style.fontSize = movesSize + "em";
+        cell.appendChild(Bold);
+        row.appendChild(cell);
+        // move
+        cell = document.createElement("td");
+        cellText = document.createTextNode('Move');
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        cell.style.fontSize = movesSize + "em";
+        cell.appendChild(Bold);
+        row.appendChild(cell);
+        // type
+        cell = document.createElement("td");
+        cellText = document.createTextNode('Type');
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        cell.style.fontSize = movesSize + "em";
+        cell.appendChild(Bold);
+        // pwr
+        row.appendChild(cell);
+        cell = document.createElement("td");
+        cellText = document.createTextNode('Pwr.');
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        cell.style.fontSize = movesSize + "em";
+        cell.appendChild(Bold);
+        row.appendChild(cell);
+        // acc
+        cell = document.createElement("td");
+        cellText = document.createTextNode('Acc.');
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        cell.style.fontSize = movesSize + "em";
+        cell.appendChild(Bold);
+        row.appendChild(cell);
+        // pp
+        cell = document.createElement("td");
+        cellText = document.createTextNode('PP');
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        cell.style.fontSize = movesSize + "em";
+        cell.appendChild(Bold);
+        row.appendChild(cell);
+        tblBody.appendChild(row);
+
+        var lastMoveType = "level-up";
+
+        for (let i = 0; i < Moves.length; i++) {      //For every move in the pokemon learnset for this gen minus egg moves 
+
+          var row = document.createElement("tr");
+          var cell = document.createElement("td");
+          var Bold = document.createElement("b");
+
+          if (lastMoveType != Moves[i].LearnMethod) {
+            if (Moves[i].LearnMethod == 'machine') {
+              var cellText = document.createTextNode("TMs");
+            } else {
+              var cellText = document.createTextNode("Tutor");
+            }
+            lastMoveType = Moves[i].LearnMethod;
+
+            Bold.appendChild(cellText);
+            cell.appendChild(Bold);
+            cell.colSpan = "6"
+            cell.style.fontSize = movesSize + "em";
+            cell.align = "center";
+
+            row.appendChild(cell);
+            tblBody.appendChild(row);
+          }
+          if (Moves[i].LearnMethod == "level-up") {
+            var cellText = document.createTextNode(`${Moves[i].Number}`);
+          } else {
+            if (Moves[i].LearnMethod == "machine") {
+              var cellText = document.createTextNode("TM" + `${Moves[i].Number - 100}`);
+            } else {
+              var cellText = document.createTextNode("Tutor");
+            }
+          }
+          row = document.createElement("tr");
+          cell = document.createElement("td");
+          cell.appendChild(cellText);
+          cell.style.fontSize = movesSize + "em";
+          row.appendChild(cell);
+
+          //Cell with the move name
+          cell = document.createElement("td");
+          cellText = document.createTextNode(`${capitalize(Moves[i].Name)}`);
+          cell.appendChild(cellText);
+          cell.style.fontSize = movesSize + "em";
+          row.appendChild(cell);
+
+          // Cell for the move type
+          cell = document.createElement("td");
+          moveType = `${Moves[i].Type}`;
+          cellText = document.createTextNode(`${capitalize(moveType)}`);
+          cell.appendChild(cellText);
+          cell.style.background = typeColors[moveType][0];
+          cell.style.fontSize = movesSize + "em";
+          cell.style.justifyContent = ("center");
+          cell.style.display = "flex";
+          row.appendChild(cell);
+
+          // Cell for power
+          cell = document.createElement("td");
+          // Status moves have null value changing it to "---"
+          if (!Moves[i].Power) {
+            cellText = document.createTextNode(`---`);
+          } else {
+            cellText = document.createTextNode(`${Moves[i].Power}`);
+          }
+          cell.appendChild(cellText);
+          cell.style.fontSize = movesSize + "em";
+          row.appendChild(cell);
+
+          // Cell for accuracy
+          cell = document.createElement("td");
+          // Status moves have null value changing it to "---"
+          if (!Moves[i].Accuracy) {
+            cellText = document.createTextNode(`---`);
+          } else {
+            cellText = document.createTextNode(`${Moves[i].Accuracy}`);
+          }
+          cell.appendChild(cellText);
+          cell.style.fontSize = movesSize + "em";
+          row.appendChild(cell);
+
+          // Cell for PPs
+          cell = document.createElement("td");
+          cellText = document.createTextNode(`${Moves[i].PP}`);
+          cell.appendChild(cellText);
+          cell.style.fontSize = movesSize + "em";
+          row.appendChild(cell);
+
+          // add the row to the end of the table body
+          tblBody.appendChild(row);
+
+        }
+        // put the <tbody> in the <table>
+        tbl.appendChild(tblBody);
+        div.appendChild(tbl);
+        // appends <table> into <body>
+        document.body.appendChild(div);
+        // sets the border attribute of tbl to '2'  
+      } 
+    </script>
+    
+  
+
+
+</body>

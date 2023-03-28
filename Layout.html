@@ -1,0 +1,1548 @@
+<!doctype html>
+<script>
+  // If you want to use the layout with another pokemon change this variable
+  // the pokemon name must be all lower case
+  let pokemonName = "torchic";
+  // If you want to change the layout to another generation change the next two variables,
+  // they must be congruent, it will not work if you put "emerald" and "generation-i" for example
+
+  // The next variable if for the game, it must be all lower case
+  // posible values are:
+  // "red-blue", "yellow", 
+  // "crystal", "gold", "silver"
+  // "emerald", "ruby-sapphire", "firered-leafgreen"
+  // "diamond-pearl", "heartgold-soulsilver", "platinum"
+  // "black-white"
+  // "omegaruby-alphasapphire", "x-y"
+  // for sun/moon use "icons", for ultra sun/moon use "ultra-sun-ultra-moon"
+  let game = "emerald";
+  // The next variable if for the game, it must be all lower case
+  // posible values are:
+  // false if you don't want the pokemon sprite in the layout is useful if you want to use another image 
+  // "auto" if you want the pokemon image to be the sprite for the game you are playing
+  // "manual" if you want to use a custom image, this image has to be placed in the "Pictures" folder and has to be called "Pokemon.png"
+  let enableImg = "auto";
+  // can't get the moves table dimensions correct auto so you have to tweak this value a bit
+  let movesZoom = "0.6";
+  let statsZoom = "1.1";
+  // YOU DON'T NEED TO TOUCH THE NEXT VARIABLES,
+  // IF YOU DO IT'S AT YOUR OWN RISK
+
+
+  let gameGen = {
+    'red-blue': 'generation-i',
+    yellow: 'generation-i',
+    crystal: 'generation-ii',
+    gold: 'generation-ii',
+    silver: 'generation-ii',
+    'ruby-sapphire': 'generation-iii',
+    emerald: 'generation-iii',
+    'firered-leafgreen': 'generation-iii',
+    'diamond-pearl': 'generation-iv',
+    'heartgold-soulsilver': 'generation-iv',
+    'platinum': 'generation-iv',
+    'black-white': 'generation-v',
+    'omegaruby-alphasapphire': 'generation-vi',
+    'x-y': 'generation-vi',
+    icons: 'generation-vii',
+    'ultra-sun-ultra-moon': 'generation-vii'
+  };
+
+  let generation = gameGen[game];
+  let firstGens = ['generation-i', 'generation-ii', 'generation-iii', 'generation-iv', 'generation-v'];
+  let typeColors = {
+    normal: ['#A8A878', '#6D6D4E', '#C8C898'],
+    fire: ['#F08030', '#9C531F', '#F0A050'],
+    fighting: ['#C03028', '#7D1F1A', '#E05048'],
+    water: ['#6890F0', '#445E9C', '#88B0F0'],
+    flying: ['#A890F0', '#6D5E9C', '#C8B0F0'],
+    grass: ['#78C850', '#4E8234', '#98E870'],
+    poison: ['#A040A0', '#682A68', '#A040A0'],
+    electric: ['#F8D030', '#A1871F', '#F8F050'],
+    ground: ['#E0C068', '#927D44', '#F0E088'],
+    psychic: ['#F85888', '#A13959', '#F878A8'],
+    rock: ['#B8A038', '#786824', '#D8C058'],
+    ice: ['#98D8D8', '#638D8D', '#B8F8F8'],
+    bug: ['#A8B820', '#6D7815', '#B8C830'],
+    dragon: ['#6D7815', '#4924A1', '#8D9835'],
+    ghost: ['#705898', '#493963', '#9078B8'],
+    dark: ['#705848', '#49392F', '#907868'],
+    steel: ['#B8B8D0', '#787887', '#D8D8F0'],
+    fairy: ['#EE99AC', '#9B6470', '#fEB9CC'],
+  };
+
+  let Natures = {
+    "0": ["Hardy", "", ""],
+    "1": ["Lonely", "Attack", "Defense"],
+    "2": ["Brave", "Attack", "Speed"],
+    "3": ["Adamant", "Attack", "SpecialAttack"],
+    "4": ["Naughty", "Attack", "SpecialDefense"],
+    "5": ["Bold", "Defense", "Attack"],
+    "6": ["Docile", "", ""],
+    "7": ["Relaxed", "Defense", "Speed"],
+    "8": ["Impish", "Defense", "SpecialAttack"],
+    "9": ["Lax", "Defense", "SpecialDefense"],
+    "10": ["Timid", "Speed", "Attack"],
+    "11": ["Hasty", "Speed", "Defense"],
+    "12": ["Serious", "", ""],
+    "13": ["Jolly", "Speed", "SpecialAttack"],
+    "14": ["Naive", "Speed", "SpecialDefense"],
+    "15": ["Modest", "SpecialAttack", "Attack"],
+    "16": ["Mild", "SpecialAttack", "Defense"],
+    "17": ["Quiet", "SpecialAttack", "Speed"],
+    "18": ["Bashful", "", ""],
+    "19": ["Rash", "SpecialAttack", "SpecialDefense"],
+    "20": ["Calm", "SpecialDefense", "Attack"],
+    "21": ["Gentle", "SpecialDefense", "Defense"],
+    "22": ["Sassy", "SpecialDefense", "Speed"],
+    "23": ["Careful", "SpecialDefense", "SpecialAttack"],
+    "24": ["Quirky", "", ""],
+
+
+
+
+  }
+
+</script>
+
+<script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+<script src="https://unpkg.com/vue@latest/dist/vue.global.js"></script>
+<script src="http://localhost:8085/dist/gameHookMapperClient.js"></script>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Kronaast Layout</title>
+</head>
+
+<body onload='generateLayout()'>
+  <style>
+    body {
+      background-image: url('Pictures/Background.png');
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: cover;
+    }
+  </style>
+  <t id="app"></t>
+  <div>
+
+    <script type="text/javascript">
+      function compare(a, b) {
+        if (a.Number < b.Number) {
+          return -1;
+        }
+        if (a.Number > b.Number) {
+          return 1;
+        } else {
+          return 0;
+        }
+      }
+
+      function capitalize(word) {
+        return word[0].toUpperCase() + word.slice(1);
+      }
+
+
+      async function generateLayout() {
+        var mapper = new GameHookMapperClient();
+        // Establish a connection to GameHook.
+        await mapper.connect();
+        var itemImg = document.createElement("img");
+        //updater section
+        mapper.properties.player.team[0].hp.change(async (x) => {
+          document.getElementById("currentHP").innerHTML = mapper.properties.player.team[0].hp + "/" + mapper.properties.player.team[0].maxHp;
+        })
+        mapper.properties.player.team[0].maxHp.change(async (x) => {
+          document.getElementById("currentHP").innerHTML = mapper.properties.player.team[0].hp + "/" + mapper.properties.player.team[0].maxHp;
+        })
+        mapper.properties.player.team[0].attack.change(async (x) => {
+          document.getElementById("currentAttack").innerHTML = mapper.properties.player.team[0].attack;
+        })
+        mapper.properties.player.team[0].defense.change(async (x) => {
+          document.getElementById("currentDefense").innerHTML = mapper.properties.player.team[0].defense;
+        })
+        mapper.properties.player.team[0].specialAttack.change(async (x) => {
+          document.getElementById("currentSpecialAttack").innerHTML = mapper.properties.player.team[0].specialAttack;
+        })
+        mapper.properties.player.team[0].specialDefense.change(async (x) => {
+          document.getElementById("currentSpecialDefense").innerHTML = mapper.properties.player.team[0].specialDefense;
+        })
+        mapper.properties.player.team[0].speed.change(async (x) => {
+          document.getElementById("currentSpeed").innerHTML = mapper.properties.player.team[0].speed;
+        })
+        //not sure if this is needed
+        mapper.properties.battle.yourPokemon.ability.change(async (x) => {
+          document.getElementById("currentAbility").innerHTML = "Ability: " + capitalize(String(mapper.properties.battle.yourPokemon.ability).toLowerCase());
+        })
+        mapper.properties.player.team[0].nature.change(async (x) => {
+          document.getElementById("currentNature").innerHTML = "Natures: " + Natures[mapper.properties.player.team[0].nature][0];
+        })
+        mapper.properties.player.team[0].itemHeld.change(async (x) => {
+
+          item = mapper.properties.player.team[0].itemHeld;
+          ite = ((String(item).toLowerCase()).replaceAll(' ', '-'));
+          if (mapper.properties.player.team[0].itemHeld.value == null) {
+            document.getElementById("currentItem").innerHTML = "";
+            itemImg.src = 'Pictures/Blank.png';
+          } else {
+            document.getElementById("currentItem").innerHTML = capitalize(String(mapper.properties.player.team[0].itemHeld).toLowerCase());
+            itemImg.src = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/' + ite + '.png';
+          }
+          document.getElementById("currentItemImg").innerHTML = ItemImg;
+        })
+        mapper.properties.player.team[0].move1.change(async (x) => {
+          for (var i = 0; i < savedMoves.length; i++) {
+            mov1 = ((String(mapper.properties.player.team[0].move1.value).toLowerCase()).replaceAll(' ', '-'));
+            if (savedMoves[i].name == mov1) {
+              M1MaxPP = savedMoves[i].pp;
+              M1Type = savedMoves[i].type.name;
+            }
+          }
+          document.getElementById("currentMove1").innerHTML = capitalize(String(mapper.properties.player.team[0].move1).toLowerCase());
+          document.getElementById("currentMove1PP").innerHTML = mapper.properties.player.team[0].move1pp + "/" + M1MaxPP;
+          document.getElementById("MTypeCell1").innerHTML = capitalize(M1Type);
+          MTypeCell1.style.background = typeColors[M1Type][0]
+          
+        })
+        mapper.properties.player.team[0].move1pp.change(async (x) => {
+          document.getElementById("currentMove1PP").innerHTML = mapper.properties.player.team[0].move1pp + "/" + M1MaxPP;
+        })
+        mapper.properties.player.team[0].move2.change(async (x) => {
+          for (var i = 0; i < savedMoves.length; i++) {
+            mov2 = ((String(mapper.properties.player.team[0].move2.value).toLowerCase()).replaceAll(' ', '-'));
+            if (savedMoves[i].name == mov2) {
+              M2MaxPP = savedMoves[i].pp;
+              M2Type = savedMoves[i].type.name;
+            }
+          }
+          
+          document.getElementById("currentMove2").innerHTML = capitalize(String(mapper.properties.player.team[0].move2).toLowerCase());
+          document.getElementById("currentMove2PP").innerHTML = mapper.properties.player.team[0].move2pp + "/" + M2MaxPP;
+          document.getElementById("MTypeCell2").innerHTML = capitalize(M2Type);
+          MTypeCell3.style.background = typeColors[M3Type][0]
+        })
+        mapper.properties.player.team[0].move2pp.change(async (x) => {
+          if (mapper.properties.player.team[0].move2.value == null) {
+            document.getElementById("currentMove2PP").innerHTML = "";
+          } else {
+            document.getElementById("currentMove2PP").innerHTML = mapper.properties.player.team[0].move2pp + "/" + M2MaxPP;
+          }
+        })
+        mapper.properties.player.team[0].move3.change(async (x) => {
+          for (var i = 0; i < savedMoves.length; i++) {
+            mov3 = ((String(mapper.properties.player.team[0].move3.value).toLowerCase()).replaceAll(' ', '-'));
+            if (savedMoves[i].name == mov3) {
+              M3MaxPP = savedMoves[i].pp;
+              M3Type = savedMoves[i].type.name;
+            }
+          }
+          document.getElementById("currentMove3").innerHTML = capitalize(String(mapper.properties.player.team[0].move3).toLowerCase());
+          document.getElementById("currentMove3PP").innerHTML = mapper.properties.player.team[0].move3pp + "/" + M3MaxPP;
+          document.getElementById("MTypeCell3").innerHTML = capitalize(M3Type);
+          MTypeCell3.style.background = typeColors[M3Type][0]
+        })
+        mapper.properties.player.team[0].move3pp.change(async (x) => {
+          if (mapper.properties.player.team[0].move3.value == null) {
+            document.getElementById("currentMove3PP").innerHTML = "";
+          } else {
+            document.getElementById("currentMove3PP").innerHTML = mapper.properties.player.team[0].move3pp + "/" + M3MaxPP;
+          }
+        })
+        mapper.properties.player.team[0].move4.change(async (x) => {
+          for (var i = 0; i < savedMoves.length; i++) {
+            mov4 = ((String(mapper.properties.player.team[0].move4.value).toLowerCase()).replaceAll(' ', '-'));
+            if (savedMoves[i].name == mov4) {
+              M4MaxPP = savedMoves[i].pp;
+              M4Type = savedMoves[i].type.name;
+            }
+          }
+          
+          document.getElementById("currentMove4").innerHTML = capitalize(String(mapper.properties.player.team[0].move4).toLowerCase());
+          document.getElementById("currentMove4PP").innerHTML = mapper.properties.player.team[0].move4pp + "/" + M4MaxPP;
+          document.getElementById("MTypeCell4").innerHTML = capitalize(M4Type);
+          MTypeCell4.style.background = typeColors[M4Type][0];
+        })
+        mapper.properties.player.team[0].move4pp.change(async (x) => {
+          if (mapper.properties.player.team[0].move4.value == null) {
+            document.getElementById("currentMove4PP").innerHTML = "";
+          } else {
+            document.getElementById("currentMove4PP").innerHTML = mapper.properties.player.team[0].move4pp + "/" + M4MaxPP;
+          }
+        })
+
+        let httpRequest = new XMLHttpRequest();
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "https://pokeapi.co/api/v2/pokemon/" + pokemonName, false);
+        xhttp.send();
+        var json = xhttp.responseText;
+        const obj = JSON.parse(json);
+
+        var baseHP = obj.stats[0].base_stat;
+        var baseAttack = obj.stats[1].base_stat;
+        var baseDefense = obj.stats[2].base_stat;
+        var baseSpecialAttack = obj.stats[3].base_stat;
+        var baseSpecialDefense = obj.stats[4].base_stat;
+        var baseSpeed = obj.stats[5].base_stat;
+        var statTotal = baseHP + baseAttack + baseDefense + baseSpecialAttack + baseSpecialDefense + baseSpeed;
+
+        var maxHp = mapper.properties.player.team[0].maxHp;
+        var currentHP = mapper.properties.player.team[0].hp;
+        var currentAttack = mapper.properties.player.team[0].attack;
+        var currentDefense = mapper.properties.player.team[0].defense;
+        var currentSpecialAttack = mapper.properties.player.team[0].specialAttack;
+        var currentSpecialDefense = mapper.properties.player.team[0].specialDefense;
+        var currentSpeed = mapper.properties.player.team[0].speed;
+        //table for the stats, (it's long)
+        var tblStats = document.createElement("table");
+        const tblBodyStats = document.createElement("tbody");
+        const divStats = document.createElement("div");
+        tblStats.style.border = '10px';
+        tblStats.style.whiteSpace = 'nowrap';
+        tblStats.style.position = 'absolute';
+        tblStats.style.left = '30px';
+        tblStats.style.bottom = '100px';
+
+        let httpRequestG = new XMLHttpRequest();
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "https://pokeapi.co/api/v2/pokemon-species/" + pokemonName, false);
+        xhttp.send();
+        var jsonG = xhttp.responseText;
+        const objG = JSON.parse(jsonG);
+
+        //Level
+        var level = mapper.properties.player.team[0].level;
+        var trLevel = document.createElement("tr");
+        var tdLevel = document.createElement("td");
+        var tTextLevel = document.createTextNode("Level: " + level);
+        var bLevel = document.createElement("b");
+        bLevel.appendChild(tTextLevel);
+        var growth = objG.growth_rate.name;
+        var tdGrowth = document.createElement("th");
+        var tTextGrowth = document.createTextNode("Growth: " + capitalize(growth));
+        var bGrowth = document.createElement("b");
+
+        bGrowth.appendChild(tTextGrowth);
+        tdLevel.appendChild(bLevel);
+        trLevel.appendChild(tdLevel);
+        tdGrowth.appendChild(bGrowth);
+        trLevel.appendChild(tdGrowth);
+        tdGrowth.style.width = "50px";
+        tdGrowth.style.display = "flex";
+        tblBodyStats.appendChild(trLevel);
+        //HP
+        var trStats = document.createElement("tr");
+        var thStats = document.createElement("th");
+        trStats.style.background = '#FF5959';
+        trStats.style.textAlign = 'center'
+        thStats.style.width = '85px';
+        thStats.style.paddingLeft = '0.5em';
+        thStats.style.paddingRight = '0.5em';
+        var div1 = document.createElement("div");
+        var div2 = document.createElement("div");
+        var span = document.createElement("span");
+        var t = document.createElement("t");
+        var tText = document.createTextNode('Hp:');
+        var td = document.createElement("td");
+        var cellText = document.createTextNode(baseHP);
+
+        var div3 = document.createElement("div");
+        div1.style.float = 'left';
+        span.style.color = '#000';
+        div2.style.float = 'right';
+        td.style.width = '100px';
+        div3.style.backgroundColor = '#FF0000';
+        div3.style.border = '1px solid #A60000';
+        div3.style.height = '20px';
+        div3.classList.add('statbar');
+        div3.style.width = baseHP / 255 * 100 + "%";
+        t.appendChild(tText);
+        div1.appendChild(t);
+        div2.appendChild(cellText);
+        thStats.appendChild(div1);
+        thStats.appendChild(div2);
+        trStats.appendChild(thStats);
+        td.appendChild(div3);
+        trStats.appendChild(thStats);
+        trStats.appendChild(td);
+        // Nature stuff
+        tdN = document.createElement("td");
+        tdN.style.width = '20px';
+        trStats.appendChild(tdN);
+        // Current stat stuff
+        tdS = document.createElement("td");
+        tdS.style.fontWeight = ("bold");
+        tdS.style.width = '50px';
+        var tdSText = document.createTextNode(currentHP + "/" + maxHp);
+        tdS.setAttribute("id", "currentHP");
+        tdS.appendChild(tdSText);
+        trStats.appendChild(tdS);
+        tblBodyStats.appendChild(trStats);
+
+        //ATK
+        var trStats = document.createElement("tr");
+        var thStats = document.createElement("th");
+        trStats.style.background = '#F5AC78';
+        trStats.style.textAlign = 'center'
+        thStats.style.width = '85px';
+        thStats.style.paddingLeft = '0.5em';
+        thStats.style.paddingRight = '0.5em';
+        var div1 = document.createElement("div");
+        var div2 = document.createElement("div");
+        var span = document.createElement("span");
+        var t = document.createElement("t");
+        var tText = document.createTextNode('Atk:');
+        var td = document.createElement("td");
+        var cellText = document.createTextNode(baseAttack);
+        var div3 = document.createElement("div");
+        div1.style.float = 'left';
+        span.style.color = '#000';
+        div2.style.float = 'right';
+        td.style.width = '100px';
+        div3.style.backgroundColor = '#F08030';
+        div3.style.border = '1px solid #A1871F';
+        div3.style.height = '20px';
+        div3.classList.add('statbar');
+        div3.style.width = baseAttack / 255 * 100 + "%";
+        t.appendChild(tText);
+        div1.appendChild(t);
+        div2.appendChild(cellText);
+        thStats.appendChild(div1);
+        thStats.appendChild(div2);
+        trStats.appendChild(thStats);
+        td.appendChild(div3);
+        trStats.appendChild(thStats);
+        trStats.appendChild(td);
+        //Nature Stuff
+        tdN = document.createElement("td");
+        var img = document.createElement("img");
+        if (Natures[mapper.properties.player.team[0].nature][1] == "Attack") {
+          img.src = ('Pictures/UP.png');
+          img.style.width = '20px';
+          img.style.height = '20px';
+          tdN.appendChild(img);
+        }
+        if (Natures[mapper.properties.player.team[0].nature][2] == "Attack") {
+          img.src = ('Pictures/DOWN.png');
+          img.style.width = '20px';
+          img.style.height = '20px';
+          tdN.appendChild(img);
+        }
+        tdN.style.width = '20px';
+        tdN.style.display = 'flex';
+        tdN.style.justifyContent = 'center';
+        trStats.appendChild(tdN);
+        // Current stat stuff
+        tdS = document.createElement("td");
+        tdS.style.fontWeight = ("bold");
+        tdS.style.width = '50px';
+        var tdSText = document.createTextNode(currentAttack);
+        tdS.setAttribute("id", "currentAttack");
+        tdS.appendChild(tdSText);
+        trStats.appendChild(tdS);
+        tblBodyStats.appendChild(trStats);
+
+        //DEF
+        var trStats = document.createElement("tr");
+        var thStats = document.createElement("th");
+        trStats.style.background = '#FAE078';
+        trStats.style.textAlign = 'center'
+        thStats.style.width = '85px';
+        thStats.style.paddingLeft = '0.5em';
+        thStats.style.paddingRight = '0.5em';
+        var div1 = document.createElement("div");
+        var div2 = document.createElement("div");
+        var span = document.createElement("span");
+        var t = document.createElement("t");
+        var tText = document.createTextNode('Def:');
+        var td = document.createElement("td");
+        var cellText = document.createTextNode(baseDefense);
+        var div3 = document.createElement("div");
+        div1.style.float = 'left';
+        span.style.color = '#000';
+        div2.style.float = 'right';
+        td.style.width = '100px';
+        div3.style.backgroundColor = '#F8D030';
+        div3.style.border = '1px solid #A1871F';
+        div3.style.height = '20px';
+        div3.classList.add('statbar');
+        div3.style.width = baseDefense / 255 * 100 + "%";
+        t.appendChild(tText);
+        div1.appendChild(t);
+        div2.appendChild(cellText);
+        thStats.appendChild(div1);
+        thStats.appendChild(div2);
+        trStats.appendChild(thStats);
+        td.appendChild(div3);
+        trStats.appendChild(thStats);
+        trStats.appendChild(td);
+        //Nature Stuff
+        tdN = document.createElement("td");
+        var img = document.createElement("img");
+        if (Natures[mapper.properties.player.team[0].nature][1] == "Defense") {
+          img.src = ('Pictures/UP.png');
+          img.style.width = '20px';
+          img.style.height = '20px';
+          tdN.appendChild(img);
+        }
+        if (Natures[mapper.properties.player.team[0].nature][2] == "Defense") {
+          img.src = ('Pictures/DOWN.png');
+          img.style.width = '20px';
+          img.style.height = '20px';
+          tdN.appendChild(img);
+        }
+        tdN.style.width = '20px';
+        tdN.style.display = 'flex';
+        tdN.style.justifyContent = 'center';
+        trStats.appendChild(tdN);
+        // Current stat stuff
+        tdS = document.createElement("td");
+        tdS.style.fontWeight = ("bold");
+        tdS.style.width = '50px';
+        var tdSText = document.createTextNode(currentDefense);
+        tdS.setAttribute("id", "currentDefense");
+        tdS.appendChild(tdSText);
+        trStats.appendChild(tdS);
+        tblBodyStats.appendChild(trStats);
+
+        //SP.ATK
+        var trStats = document.createElement("tr");
+        var thStats = document.createElement("th");
+        trStats.style.background = '#9DB7F5';
+        trStats.style.textAlign = 'center'
+        thStats.style.width = '85px';
+        thStats.style.paddingLeft = '0.5em';
+        thStats.style.paddingRight = '0.5em';
+        var div1 = document.createElement("div");
+        var div2 = document.createElement("div");
+        var span = document.createElement("span");
+        var t = document.createElement("t");
+        var tText = document.createTextNode('Sp.Atk:');
+        var td = document.createElement("td");
+        var cellText = document.createTextNode(baseSpecialAttack);
+        var div3 = document.createElement("div");
+        div1.style.float = 'left';
+        span.style.color = '#000';
+        div2.style.float = 'right';
+        td.style.width = '100px';
+        div3.style.backgroundColor = '#6890F0';
+        div3.style.border = '1px solid #445E9C';
+        div3.style.height = '20px';
+        div3.classList.add('statbar');
+        div3.style.width = baseSpecialAttack / 255 * 100 + "%";
+        t.appendChild(tText);
+        div1.appendChild(t);
+        div2.appendChild(cellText);
+        thStats.appendChild(div1);
+        thStats.appendChild(div2);
+        trStats.appendChild(thStats);
+        td.appendChild(div3);
+        trStats.appendChild(thStats);
+        trStats.appendChild(td);
+        //Nature Stuff
+        tdN = document.createElement("td");
+        var img = document.createElement("img");
+        if (Natures[mapper.properties.player.team[0].nature][1] == "SpecialAttack") {
+          img.src = ('Pictures/UP.png');
+          img.style.width = '20px';
+          img.style.height = '20px';
+          tdN.appendChild(img);
+        }
+        if (Natures[mapper.properties.player.team[0].nature][2] == "SpecialAttack") {
+          img.src = ('Pictures/DOWN.png');
+          img.style.width = '20px';
+          img.style.height = '20px';
+          tdN.appendChild(img);
+        }
+        tdN.style.width = '20px';
+        tdN.style.display = 'flex';
+        tdN.style.justifyContent = 'center';
+        trStats.appendChild(tdN);
+        // Current stat stuff
+        tdS = document.createElement("td");
+        tdS.style.fontWeight = ("bold");
+        tdS.style.width = '50px';
+        var tdSText = document.createTextNode(currentSpecialAttack);
+        tdS.setAttribute("id", "currentSpecialAttack");
+        tdS.appendChild(tdSText);
+        trStats.appendChild(tdS);
+        tblBodyStats.appendChild(trStats);
+
+        //SP.DEF
+        var trStats = document.createElement("tr");
+        var thStats = document.createElement("th");
+        trStats.style.background = '#A7DB8D';
+        trStats.style.textAlign = 'center'
+        thStats.style.width = '85px';
+        thStats.style.paddingLeft = '0.5em';
+        thStats.style.paddingRight = '0.5em';
+        var div1 = document.createElement("div");
+        var div2 = document.createElement("div");
+        var span = document.createElement("span");
+        var t = document.createElement("t");
+        var tText = document.createTextNode('Sp.Def:');
+        var td = document.createElement("td");
+        var cellText = document.createTextNode(baseSpecialDefense);
+        var div3 = document.createElement("div");
+        div1.style.float = 'left';
+        span.style.color = '#000';
+        div2.style.float = 'right';
+        td.style.width = '100px';
+        div3.style.backgroundColor = '#78C850';
+        div3.style.border = '1px solid #4E8234';
+        div3.style.height = '20px';
+        div3.classList.add('statbar');
+        div3.style.width = baseSpecialDefense / 255 * 100 + "%";
+        t.appendChild(tText);
+        div1.appendChild(t);
+        div2.appendChild(cellText);
+        thStats.appendChild(div1);
+        thStats.appendChild(div2);
+        trStats.appendChild(thStats);
+        td.appendChild(div3);
+        trStats.appendChild(thStats);
+        trStats.appendChild(td);
+        //Nature Stuff
+        tdN = document.createElement("td");
+        var img = document.createElement("img");
+        if (Natures[mapper.properties.player.team[0].nature][1] == "SpecialDefense") {
+          img.src = ('Pictures/UP.png');
+          img.style.width = '20px';
+          img.style.height = '20px';
+          tdN.appendChild(img);
+        }
+        if (Natures[mapper.properties.player.team[0].nature][2] == "SpecialDefense") {
+          img.src = ('Pictures/DOWN.png');
+          img.style.width = '20px';
+          img.style.height = '20px';
+          tdN.appendChild(img);
+        }
+        tdN.style.width = '20px';
+        tdN.style.display = 'flex';
+        tdN.style.justifyContent = 'center';
+        trStats.appendChild(tdN);
+        // Current stat stuff
+        tdS = document.createElement("td");
+        tdS.style.fontWeight = ("bold");
+        tdS.style.width = '50px';
+        var tdSText = document.createTextNode(currentSpecialDefense);
+        tdS.setAttribute("id", "currentSpecialDefense");
+        tdS.appendChild(tdSText);
+        trStats.appendChild(tdS);
+        tblBodyStats.appendChild(trStats);
+
+        //SPEED
+        var trStats = document.createElement("tr");
+        var thStats = document.createElement("th");
+        trStats.style.background = '#FA92B2';
+        trStats.style.textAlign = 'center'
+        thStats.style.width = '85px';
+        thStats.style.paddingLeft = '0.5em';
+        thStats.style.paddingRight = '0.5em';
+        var div1 = document.createElement("div");
+        var div2 = document.createElement("div");
+        var span = document.createElement("span");
+        var t = document.createElement("t");
+        var tText = document.createTextNode('Speed:');
+        var td = document.createElement("td");
+        var cellText = document.createTextNode(baseSpeed);
+        var div3 = document.createElement("div");
+        div1.style.float = 'left';
+        span.style.color = '#000';
+        div2.style.float = 'right';
+        td.style.width = '100px';
+        div3.style.backgroundColor = '#F85888';
+        div3.style.border = '1px solid #A13959';
+        div3.style.height = '20px';
+        div3.classList.add('statbar');
+        div3.style.width = baseSpeed / 255 * 100 + "%";
+        t.appendChild(tText);
+        div1.appendChild(t);
+        div2.appendChild(cellText);
+        thStats.appendChild(div1);
+        thStats.appendChild(div2);
+        trStats.appendChild(thStats);
+        td.appendChild(div3);
+        trStats.appendChild(thStats);
+        trStats.appendChild(td);
+        //Nature Stuff
+        tdN = document.createElement("td");
+        var img = document.createElement("img");
+        if (Natures[mapper.properties.player.team[0].nature][1] == "Speed") {
+          img.src = ('Pictures/UP.png');
+          img.style.width = '20px';
+          img.style.height = '20px';
+          tdN.appendChild(img);
+        }
+        if (Natures[mapper.properties.player.team[0].nature][2] == "Speed") {
+          img.src = ('Pictures/DOWN.png');
+          img.style.width = '20px';
+          img.style.height = '20px';
+          tdN.appendChild(img);
+        }
+        tdN.style.width = '20px';
+        tdN.style.display = 'flex';
+        tdN.style.justifyContent = 'center';
+        trStats.appendChild(tdN);
+        // Current stat stuff
+        tdS = document.createElement("td");
+        tdS.style.fontWeight = ("bold");
+        tdS.style.width = '50px';
+        var tdSText = document.createTextNode(currentSpeed);
+        tdS.setAttribute("id", "currentSpeed");
+        tdS.appendChild(tdSText);
+        trStats.appendChild(tdS);
+        tblBodyStats.appendChild(trStats);
+
+        //TOTAL
+        var trStats = document.createElement("tr");
+        var thStats = document.createElement("th");
+        trStats.style.background = '#CDCDCD';
+        trStats.style.textAlign = 'center'
+        thStats.style.width = '85px';
+        thStats.style.paddingLeft = '0.5em';
+        thStats.style.paddingRight = '0.5em';
+        var div1 = document.createElement("div");
+        var div2 = document.createElement("div");
+        var span = document.createElement("span");
+        var t = document.createElement("t");
+        var tText = document.createTextNode('Total:');
+        var td = document.createElement("td");
+        var cellText = document.createTextNode(statTotal);
+        var div3 = document.createElement("div");
+        div1.style.float = 'left';
+        span.style.color = '#000';
+        div2.style.float = 'right';
+        td.style.width = '100px';
+        div3.style.backgroundColor = '#898989';
+        div3.style.border = '1px solid #000000';
+        div3.style.height = '20px';
+        div3.classList.add('statbar');
+        div3.style.width = statTotal / 720 * 100 + "%";
+        t.appendChild(tText);
+        div1.appendChild(t);
+        div2.appendChild(cellText);
+        thStats.appendChild(div1);
+        thStats.appendChild(div2);
+        trStats.appendChild(thStats);
+        td.appendChild(div3);
+        trStats.appendChild(thStats);
+        trStats.appendChild(td);
+        //Nature stuff
+        tdN = document.createElement("td");
+        tdN.style.width = '20px';
+        trStats.appendChild(tdN);
+        // Current stat stuff
+        tdS = document.createElement("td");
+        tdS.style.width = '50px';
+        trStats.appendChild(tdS)
+        tblBodyStats.appendChild(trStats);
+        tblBodyStats.style.zoom = statsZoom;
+        tblStats.appendChild(tblBodyStats);
+
+        divStats.appendChild(tblStats);
+        // appends <table> into <body>
+        document.body.appendChild(divStats);
+
+        var timeDiv = document.createElement("div");
+        var timeValueDiv = document.createElement("div");
+        var resetDiv = document.createElement("div");
+        var resetValueDiv = document.createElement("div");
+        var time = document.createElement("p");
+        var resets = document.createElement("p");
+        //"real time" cell 
+        timeDiv.style.position = ("absolute");
+        timeDiv.style.width = "200px";
+        timeDiv.style.top = "5px";
+        timeDiv.style.left = "250px";
+        timeDiv.style.height = "40px";
+        timeDiv.style.border = "solid green";
+        timeDiv.style.background = "white";
+        timeDiv.style.fontSize = ("xx-large");
+        timeDiv.style.fontWeight = ("bold");
+        timeDiv.style.textAlign = ("center");
+        timeDiv.style.zoom = "1.5";
+        //real tiem value cell
+        timeValueDiv.style.position = ("absolute");
+        timeValueDiv.style.width = "150px";
+        timeValueDiv.style.top = "5px";
+        timeValueDiv.style.left = "450px";
+        timeValueDiv.style.height = "40px";
+        timeValueDiv.style.border = "solid green";
+        timeValueDiv.style.background = "white";
+        timeValueDiv.style.fontSize = ("xx-large");
+        timeValueDiv.style.fontWeight = ("bold");
+        timeValueDiv.style.textAlign = ("center");
+        timeValueDiv.style.zoom = "1.5";
+        //"resets" cell
+        resetDiv.style.position = ("absolute");
+        resetDiv.style.width = "200px";
+        resetDiv.style.top = "5px";
+        resetDiv.style.left = "680px";
+        resetDiv.style.height = "40px";
+        resetDiv.style.border = "solid green";
+        resetDiv.style.background = "white";
+        resetDiv.style.fontSize = ("xx-large");
+        resetDiv.style.fontWeight = ("bold");
+        resetDiv.style.textAlign = ("center");
+        resetDiv.style.zoom = "1.5";
+        //resets value cell
+        resetValueDiv.style.position = ("absolute");
+        resetValueDiv.style.width = "150px";
+        resetValueDiv.style.top = "5px";
+        resetValueDiv.style.left = "880px";
+        resetValueDiv.style.height = "40px";
+        resetValueDiv.style.border = "solid green";
+        resetValueDiv.style.background = "white";
+        resetValueDiv.style.fontSize = ("xx-large");
+        resetValueDiv.style.fontWeight = ("bold");
+        resetValueDiv.style.textAlign = ("center");
+        resetValueDiv.style.zoom = "1.5";
+        var timeText = document.createTextNode("Time: ");
+        var resetText = document.createTextNode("Resets: ");
+
+        timeDiv.appendChild(timeText);
+        resetDiv.appendChild(resetText);
+        document.body.appendChild(timeDiv);
+        document.body.appendChild(timeValueDiv);
+        document.body.appendChild(resetDiv);
+        document.body.appendChild(resetValueDiv);
+
+        var ability = mapper.properties.battle.yourPokemon.ability;
+        var nature = Natures[mapper.properties.player.team[0].nature][0];
+        var item = mapper.properties.player.team[0].itemHeld;
+        var ite = ((String(item).toLowerCase()).replaceAll(' ', '-'));
+        var abilityDiv = document.createElement("div");
+        var natureDiv = document.createElement("div");
+        abilityDiv.setAttribute("id", "currentAbility");
+        natureDiv.setAttribute("id", "currentNature");
+        var itemDiv = document.createElement("div");
+        var itemImgDiv = document.createElement("div");
+        itemDiv.setAttribute("id", "currentItem");
+        if (ability.value == null) {
+          var abilityText = document.createTextNode("Ability: ");
+        } else {
+          var abilityText = document.createTextNode("Ability: " + capitalize(String(ability).toLowerCase()));
+        }
+        console.log(nature);
+        if (nature == null) {
+          var natureText = document.createTextNode("Nature: ");
+        } else {
+          var natureText = document.createTextNode("Nature: " + nature);
+        }
+
+        if (item.value == null) {
+          itemImg.src = 'Pictures/Blank.png';
+          var itemText = document.createTextNode('');
+        } else {
+          itemImg.src = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/' + ite + '.png';
+          var itemText = document.createTextNode(capitalize(String(item).toLowerCase()));
+        }
+
+        itemImg.style.width = "50px";
+        itemImg.style.height = "50px";
+
+        abilityDiv.style.position = ("absolute");
+        abilityDiv.style.width = "300px";
+        abilityDiv.style.top = "884px";
+        abilityDiv.style.left = "400px";
+        abilityDiv.style.border = "solid green";
+        abilityDiv.style.padding = "5px";
+        abilityDiv.style.background = "white";
+        abilityDiv.style.fontSize = ("xx-large");
+        abilityDiv.style.fontWeight = ("bold");
+        abilityDiv.style.textAlign = ("center");
+
+        natureDiv.style.position = ("absolute");
+        natureDiv.style.width = "300px";
+        natureDiv.style.top = "884px";
+        natureDiv.style.left = "1200px";
+        natureDiv.style.padding = "5px";
+        natureDiv.style.border = "solid green";
+        natureDiv.style.background = "white";
+        natureDiv.style.fontSize = ("xx-large");
+        natureDiv.style.fontWeight = ("bold");
+        natureDiv.style.textAlign = ("center");
+
+        itemDiv.style.position = ("absolute");
+        itemDiv.style.width = "200px";
+        itemDiv.style.height = "40px";
+        itemDiv.style.top = "500px";
+        itemDiv.style.left = "95px";
+        itemDiv.style.border = "solid green";
+        itemDiv.style.padding = "5px";
+        itemDiv.style.background = "white";
+        itemDiv.style.fontSize = ("xx-large");
+        itemDiv.style.fontWeight = ("bold");
+        itemDiv.style.textAlign = ("center");
+        itemDiv.style.display = "flex";
+        itemDiv.style.justifyContent = ("center");
+        itemDiv.style.alignItems = ("center");
+
+        itemImgDiv.style.position = ("absolute");
+        itemImgDiv.style.width = "50px";
+        itemImgDiv.style.height = "40px";
+        itemImgDiv.style.top = "500px";
+        itemImgDiv.style.left = "30px";
+
+        itemImgDiv.style.border = "solid green";
+        itemImgDiv.style.padding = "5px";
+        itemImgDiv.style.background = "white";
+        itemImgDiv.style.fontSize = ("xx-large");
+        itemImgDiv.style.fontWeight = ("bold");
+        itemImgDiv.style.textAlign = ("center");
+        itemImgDiv.style.display = "flex";
+        itemImgDiv.style.justifyContent = ("center");
+        itemImgDiv.style.alignItems = ("center");
+
+        itemImgDiv.setAttribute("id", "currentItemImg");
+
+        itemImgDiv.appendChild(itemImg);
+        itemDiv.appendChild(itemText);
+        abilityDiv.appendChild(abilityText);
+        natureDiv.appendChild(natureText);
+
+        document.body.appendChild(itemImgDiv);
+        document.body.appendChild(itemDiv);
+        document.body.appendChild(abilityDiv);
+        document.body.appendChild(natureDiv);
+
+        // creates a <table> element and a <tbody> element for the moves on the right
+        const tbl = document.createElement("table");
+        const tblBody = document.createElement("tbody");
+        const div = document.createElement("div");
+        var seenMoves = [];
+        var savedMoves = [];
+        var selectedMove;
+        tbl.setAttribute("border", "3");
+
+        tbl.style.borderCollapse = 'collapse';
+        div.style.height = '100%';
+        div.style.position = 'absolute';
+        div.style.display = 'flex';
+        div.style.alignItems = 'center';
+        div.style.right = '50px';
+
+        var movesNum = obj.moves.length;
+        var movesSize;
+        // Checks whether the pokemon can learn very few moves(ditto, beldum, wurmple...) or a lot
+        if (movesNum < 10) {
+          movesSize = 1.5;
+        } else {
+          // I find this function handles large movepools decently well, might not be soo good with mid sizes
+          movesSize = 2.8 / (Math.log(movesNum) / Math.LN10);
+        }
+
+        // add the pokemon image to the top-left of the layout
+        var img = document.createElement("img");
+        // if gen 1 or 2 the image name changes 
+        if (enableImg == "auto") {
+          if (generation == "generation-i" || generation == "generation-ii") {
+            img.src = (obj.sprites.versions[generation][game].front_transparent);
+          } else {
+            img.src = (obj.sprites.versions[generation][game].front_default);
+          }
+          img.style.width = '300px';
+          img.style.height = '300px';
+          img.style.position = ("absolute");
+          img.style.display = ("flex");
+          img.style.left = '30px';
+          img.style.top = '5px';
+          document.body.appendChild(img);
+        } else {
+          if (enableImg == "manual") {
+            img.src = ('Pictures/Pokemon.png');
+            img.style.width = '300px';
+            img.style.height = '300px';
+            img.style.position = ("absolute");
+            img.style.left = '30px';
+            img.style.top = '5px';
+            document.body.appendChild(img);
+          }
+        }
+
+        // this is because imges are different but moves are not
+        if (game == 'silver' || game == 'gold') {
+          game = 'gold-silver';
+        }
+
+        // Drawing the type squared under the pokemon picture
+        var monoType = true;
+        // Check if the pokemon changed types (fairy) and we are doing it for before gen6
+        // if so use the old types
+        // This can get confusing with pokemons that gain/replace types
+        if ((obj.past_types[0]) != null && firstGens.includes(generation)) {
+          // Checks if a pokemon is monotype 
+          if (obj.past_types.length == 1) {
+            var type = obj.past_types[0].types[0].type.name;
+          } else {
+            monoType = false;
+            var type = obj.past_types[0].types[0].type.name;
+            var type2 = obj.past_types[0].types[1].type.name;
+          }
+          // otherwise use the regualr types
+        } else {
+          if (obj.types.length == 1) {
+            var type = obj.types[0].type.name;
+          } else {
+            monoType = false;
+            var type = obj.types[0].type.name;
+            var type2 = obj.types[1].type.name;
+          }
+        }
+
+        if (monoType) {
+          tblStats.style.background = typeColors[type][0];
+          tblStats.style.border = "3px solid " + typeColors[type][0];
+          tbl.style.background = typeColors[type][2];
+          tbl.style.border = "5px solid " + typeColors[type][1];
+          var typeBox = document.createElement("p");
+          var Bold = document.createElement("b");
+          var cellText = document.createTextNode(`${capitalize(type)}`);
+
+          typeBox.style.fontSize = ("xx-large");
+          typeBox.style.color = ("white");
+          typeBox.style.borderRadius = "10px";
+          typeBox.style.background = (typeColors[type][0]);
+          typeBox.style.padding = ("5px");
+          typeBox.style.display = ("flex");
+          typeBox.style.position = ("absolute");
+          typeBox.style.top = "350px";
+          typeBox.style.left = "70px";
+          typeBox.style.justifyContent = ("center");
+          typeBox.style.width = '10%';
+          Bold.appendChild(cellText);
+          typeBox.appendChild(Bold);
+          document.body.appendChild(typeBox);
+        } else {
+          tblStats.style.background = typeColors[type2][0];
+          tblStats.style.border = "3px solid" + typeColors[type][0];
+          tbl.style.background = typeColors[type2][2];
+          tbl.style.border = "5px solid " + typeColors[type][1];
+          var typeBox = document.createElement("p");
+          var Bold = document.createElement("b");
+          var cellText = document.createTextNode(`${capitalize(type)}`);
+
+          var typeBox2 = document.createElement("p");
+          var Bold2 = document.createElement("b");
+          var cellText2 = document.createTextNode(`${capitalize(type2)}`);
+
+          typeBox.style.fontSize = ("x-large");
+          typeBox.style.color = ("white");
+          typeBox.style.borderRadius = "10px";
+          typeBox.style.background = (typeColors[type][0]);
+          typeBox.style.padding = ("5px");
+          typeBox.style.display = ("flex");
+          typeBox.style.position = ("absolute");
+          typeBox.style.top = "300px";
+          typeBox.style.left = "50px";
+          typeBox.style.justifyContent = ("center");
+          typeBox.style.width = '5%';
+          Bold.appendChild(cellText);
+          typeBox.appendChild(Bold);
+
+          typeBox2.style.fontSize = ("x-large");
+          typeBox2.style.color = ("white");
+          typeBox2.style.borderRadius = "10px";
+          typeBox2.style.background = (typeColors[type2][0]);
+          typeBox2.style.padding = ("5px");
+          typeBox2.style.display = ("flex");
+          typeBox2.style.position = ("absolute");
+          typeBox2.style.top = "300px";
+          typeBox2.style.left = "130px";
+          typeBox2.style.justifyContent = ("center");
+          typeBox2.style.width = '5%';
+          Bold2.appendChild(cellText2);
+          typeBox2.appendChild(Bold2);
+          typeBox.style.zoom = "1.5";
+          typeBox2.style.zoom = "1.5";
+          document.body.appendChild(typeBox);
+          document.body.appendChild(typeBox2);
+        }
+
+        var Moves = [];
+        var moveType;
+        var counter = 0;
+        // creating all cells
+        //For every move the pokemon can learn
+
+        for (let i = 0; i < movesNum; i++) {
+          xhttp.open("GET", obj.moves[i].move.url, false);
+          xhttp.send();
+          var machineJson = xhttp.responseText;
+          var machineMove = JSON.parse(machineJson);
+          for (let j = 0; j < obj.moves[i].version_group_details.length; j++) {
+            // ht will contain the moves i am interested in 
+            var ht = {};
+            var selectedMove = obj.moves[i].version_group_details[j].version_group.name;
+            var learnMethod = obj.moves[i].version_group_details[j].move_learn_method.name;
+            var moveName = obj.moves[i].move.name;
+            if (selectedMove == game && !(seenMoves.includes(moveName)) && (learnMethod != "egg")) {
+              // seen moves contains all moves i have alteady passed so i don't put the same move multiple types
+              savedMoves.push(machineMove);
+
+              seenMoves.push(moveName);
+              ht.LearnMethod = learnMethod;
+              if (learnMethod == "level-up") {
+                ht.Number = obj.moves[i].version_group_details[j].level_learned_at;
+              } else {
+                if (learnMethod == "machine") {
+                  ht.Number = 100 + machineMove.id;
+                } else {
+                  ht.Number = 1000 + machineMove.id;
+                }
+              }
+              ht.Name = machineMove.name;
+              ht.Type = machineMove.type.name;
+              ht.Power = machineMove.power;
+              ht.Accuracy = machineMove.accuracy;
+              ht.PP = machineMove.pp;
+              Moves[counter++] = ht;
+            }
+          }
+        }
+        Moves.sort(compare);
+        // Adding the first line of header to the table
+        // lvl
+        var row = document.createElement("tr");
+        var cell = document.createElement("td");
+        var cellText = document.createTextNode('Lvl.');
+        var Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        cell.style.fontSize = movesSize + "em";
+        cell.appendChild(Bold);
+        row.appendChild(cell);
+        // move
+        cell = document.createElement("td");
+        cellText = document.createTextNode('Move');
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        cell.style.fontSize = movesSize + "em";
+        cell.appendChild(Bold);
+        row.appendChild(cell);
+        // type
+        cell = document.createElement("td");
+        cellText = document.createTextNode('Type');
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        cell.style.fontSize = movesSize + "em";
+        cell.appendChild(Bold);
+        // pwr
+        row.appendChild(cell);
+        cell = document.createElement("td");
+        cellText = document.createTextNode('Pwr.');
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        cell.style.fontSize = movesSize + "em";
+        cell.appendChild(Bold);
+        row.appendChild(cell);
+        // acc
+        cell = document.createElement("td");
+        cellText = document.createTextNode('Acc.');
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        cell.style.fontSize = movesSize + "em";
+        cell.appendChild(Bold);
+        row.appendChild(cell);
+        // pp
+        cell = document.createElement("td");
+        cellText = document.createTextNode('PP');
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        cell.style.fontSize = movesSize + "em";
+        cell.appendChild(Bold);
+        row.appendChild(cell);
+        tblBody.appendChild(row);
+
+        var lastMoveType = "level-up";
+        //For every move in the pokemon learnset for this gen minus egg moves 
+        for (let i = 0; i < Moves.length; i++) {
+
+          var row = document.createElement("tr");
+          var cell = document.createElement("td");
+          var Bold = document.createElement("b");
+
+          if (lastMoveType != Moves[i].LearnMethod) {
+            if (Moves[i].LearnMethod == 'machine') {
+              var cellText = document.createTextNode("TMs");
+            } else {
+              var cellText = document.createTextNode("Tutor");
+            }
+            lastMoveType = Moves[i].LearnMethod;
+
+            Bold.appendChild(cellText);
+            cell.appendChild(Bold);
+            cell.colSpan = "6"
+            cell.style.fontSize = movesSize + "em";
+            cell.align = "center";
+
+            row.appendChild(cell);
+            tblBody.appendChild(row);
+          }
+          if (Moves[i].LearnMethod == "level-up") {
+            var cellText = document.createTextNode(`${Moves[i].Number}`);
+          } else {
+            if (Moves[i].LearnMethod == "machine") {
+              var cellText = document.createTextNode("TM" + `${Moves[i].Number - 100}`);
+            } else {
+              var cellText = document.createTextNode("Tutor");
+            }
+          }
+          row = document.createElement("tr");
+          cell = document.createElement("td");
+          cell.appendChild(cellText);
+          cell.style.fontSize = movesSize + "em";
+          row.appendChild(cell);
+
+          //Cell with the move name
+          cell = document.createElement("td");
+          cellText = document.createTextNode(`${capitalize(Moves[i].Name)}`);
+          cell.appendChild(cellText);
+          cell.style.fontSize = movesSize + "em";
+          row.appendChild(cell);
+
+          // Cell for the move type
+          cell = document.createElement("td");
+          moveType = `${Moves[i].Type}`;
+          cellText = document.createTextNode(`${capitalize(moveType)}`);
+          cell.appendChild(cellText);
+          cell.style.background = typeColors[moveType][0];
+          cell.style.fontSize = movesSize + "em";
+          cell.style.justifyContent = ("center");
+          cell.style.display = "flex";
+          row.appendChild(cell);
+
+          // Cell for power
+          cell = document.createElement("td");
+          // Status moves have null value changing it to "---"
+          if (!Moves[i].Power) {
+            cellText = document.createTextNode(`---`);
+          } else {
+            cellText = document.createTextNode(`${Moves[i].Power}`);
+          }
+          cell.appendChild(cellText);
+          cell.style.fontSize = movesSize + "em";
+          row.appendChild(cell);
+
+          // Cell for accuracy
+          cell = document.createElement("td");
+          // Status moves have null value changing it to "---"
+          if (!Moves[i].Accuracy) {
+            cellText = document.createTextNode(`---`);
+          } else {
+            cellText = document.createTextNode(`${Moves[i].Accuracy}`);
+          }
+          cell.appendChild(cellText);
+          cell.style.fontSize = movesSize + "em";
+          row.appendChild(cell);
+
+          // Cell for PPs
+          cell = document.createElement("td");
+          cellText = document.createTextNode(`${Moves[i].PP}`);
+          cell.appendChild(cellText);
+          cell.style.fontSize = movesSize + "em";
+          row.appendChild(cell);
+
+          // add the row to the end of the table body
+          tblBody.appendChild(row);
+
+        }
+        // put the <tbody> in the <table>
+        tblBody.style.zoom = movesZoom;
+        tbl.appendChild(tblBody);
+        div.appendChild(tbl);
+        // appends <table> into <body>
+        document.body.appendChild(div);
+
+        var M1MaxPP = "0";
+        var M2MaxPP = "0";
+        var M3MaxPP = "0";
+        var M4MaxPP = "0";
+        var M1Type = "grass";
+        var M2Type = "0";
+        var M3Type = "0";
+        var M4Type = "0";
+        for (var i = 0; i < savedMoves.length; i++) {
+          var mov1 = ((String(mapper.properties.player.team[0].move1.value).toLowerCase()).replaceAll(' ', '-'));
+
+          if (savedMoves[i].name == mov1) {
+            M1MaxPP = savedMoves[i].pp;
+            M1Type = savedMoves[i].type.name;
+          }
+          if (mapper.properties.player.team[0].move2.value != null) {
+            var mov2 = ((String(mapper.properties.player.team[0].move2.value).toLowerCase()).replaceAll(' ', '-'));
+            if (savedMoves[i].name == mov2) {
+              M2MaxPP = savedMoves[i].pp;
+              M2Type = savedMoves[i].type.name;
+            }
+          }
+          if (mapper.properties.player.team[0].move3.value != null) {
+            var mov3 = ((String(mapper.properties.player.team[0].move3.value).toLowerCase()).replaceAll(' ', '-'));
+            if (savedMoves[i].name == mov3) {
+              M3MaxPP = savedMoves[i].pp;
+              M3Type = savedMoves[i].type.name;
+            }
+          }
+          if (mapper.properties.player.team[0].move4.value != null) {
+            var mov4 = ((String(mapper.properties.player.team[0].move4.value).toLowerCase()).replaceAll(' ', '-'));
+            if (savedMoves[i].name == mov4) {
+              M4MaxPP = savedMoves[i].pp;
+              M4Type = savedMoves[i].type.name;
+            }
+          }
+        }
+
+
+        var MTable = document.createElement("table");
+        var MtblBody = document.createElement("tbody");
+        var MRow1 = document.createElement("tr");
+        var MRow2 = document.createElement("tr");
+        var MCell1 = document.createElement("td");
+        var MCell2 = document.createElement("td");
+        var MCell3 = document.createElement("td");
+        var MCell4 = document.createElement("td");
+
+        var MCell1PP = document.createElement("td");
+        var MCell2PP = document.createElement("td");
+        var MCell3PP = document.createElement("td");
+        var MCell4PP = document.createElement("td");
+
+        var MTypeCell1 = document.createElement("td");
+        var MTypeCell2 = document.createElement("td");
+        var MTypeCell3 = document.createElement("td");
+        var MTypeCell4 = document.createElement("td");
+
+        MCell1.style.background = "white";
+        MCell1.style.border = "solid green";
+        MCell1.style.padding = "5px";
+        MCell1.style.fontSize = ("xx-large");
+        MCell1.style.fontWeight = ("bold");
+        MCell1.style.height = "20px";
+        MCell1.style.width = "100px";
+        MCell1.setAttribute("id", "currentMove1");
+        MCell1.style.textAlign = ("center");
+
+        MCell2.style.background = "white";
+        MCell2.style.border = "solid green";
+        MCell2.style.padding = "5px";
+        MCell2.style.fontSize = ("xx-large");
+        MCell2.style.fontWeight = ("bold");
+        MCell2.style.height = "20px";
+        MCell2.style.width = "100px";
+        MCell2.setAttribute("id", "currentMove2");
+        MCell2.style.textAlign = ("center");
+
+        MCell3.style.background = "white";
+        MCell3.style.border = "solid green";
+        MCell3.style.padding = "5px";
+        MCell3.style.fontSize = ("xx-large");
+        MCell3.style.fontWeight = ("bold");
+        MCell3.style.height = "20px";
+        MCell3.style.width = "100px";
+        MCell3.setAttribute("id", "currentMove3");
+        MCell3.style.textAlign = ("center");
+
+        MCell4.style.background = "white";
+        MCell4.style.border = "solid green";
+        MCell4.style.padding = "5px";
+        MCell4.style.fontSize = ("xx-large");
+        MCell4.style.fontWeight = ("bold");
+        MCell4.style.height = "20px";
+        MCell4.style.width = "100px";
+        MCell4.setAttribute("id", "currentMove4");
+        MCell4.style.textAlign = ("center");
+
+        MCell1PP.style.background = "white";
+        MCell1PP.style.border = "solid green";
+        MCell1PP.style.padding = "5px";
+        MCell1PP.style.fontSize = ("xx-large");
+        MCell1PP.style.fontWeight = ("bold");
+        MCell1PP.style.width = "40px";
+        MCell1PP.setAttribute("id", "currentMove1PP");
+
+        MCell2PP.style.background = "white";
+        MCell2PP.style.border = "solid green";
+        MCell2PP.style.padding = "5px";
+        MCell2PP.style.fontSize = ("xx-large");
+        MCell2PP.style.fontWeight = ("bold");
+        MCell2PP.style.width = "40px";
+        MCell2PP.setAttribute("id", "currentMove2PP");
+
+        MCell3PP.style.background = "white";
+        MCell3PP.style.border = "solid green";
+        MCell3PP.style.padding = "5px";
+        MCell3PP.style.fontSize = ("xx-large");
+        MCell3PP.style.fontWeight = ("bold");
+        MCell3PP.style.width = "40px";
+        MCell3PP.setAttribute("id", "currentMove3PP");
+
+        MCell4PP.style.background = "white";
+        MCell4PP.style.border = "solid green";
+        MCell4PP.style.padding = "5px";
+        MCell4PP.style.fontSize = ("xx-large");
+        MCell4PP.style.fontWeight = ("bold");
+        MCell4PP.style.width = "40px";
+        MCell4PP.setAttribute("id", "currentMove4PP");
+
+
+        // Cell for the move type
+        cellText = document.createTextNode(capitalize(M1Type));
+        MTypeCell1.appendChild(cellText);
+        MTypeCell1.style.background = typeColors[M1Type][0];
+        MTypeCell1.style.fontSize = movesSize + "em";
+        MTypeCell1.style.textAlign = ("center");
+        MTypeCell1.style.border = "solid green";
+        MTypeCell1.style.padding = "5px";
+        MTypeCell1.style.fontSize = ("small");
+        MTypeCell1.style.fontWeight = ("bold");
+        MTypeCell1.setAttribute("id", "MTypeCell1");
+
+
+        if (M2Type != 0) {
+          MTypeCell2.style.background = typeColors[M2Type][0];
+          cellText = document.createTextNode(capitalize(M2Type));
+        } else {
+          MTypeCell2.style.background = "white";
+          cellText = document.createTextNode(" ");
+        }
+        MTypeCell2.appendChild(cellText);
+        MTypeCell2.style.fontSize = movesSize + "em";
+        MTypeCell2.style.textAlign = ("center");
+        MTypeCell2.style.border = "solid green";
+        MTypeCell2.style.padding = "5px";
+        MTypeCell2.style.fontSize = ("small");
+        MTypeCell2.style.fontWeight = ("bold");
+        MTypeCell2.setAttribute("id", "MTypeCell2");
+
+
+        if (M3Type != 0) {
+          MTypeCell3.style.background = typeColors[M3Type][0];
+          cellText = document.createTextNode(capitalize(M3Type));
+        } else {
+          MTypeCell3.style.background = "white";
+          cellText = document.createTextNode(" ");
+        }
+        MTypeCell3.appendChild(cellText);
+        MTypeCell3.style.fontSize = movesSize + "em";
+        MTypeCell3.style.textAlign = ("center");
+        MTypeCell3.style.border = "solid green";
+        MTypeCell3.style.padding = "5px";
+        MTypeCell3.style.fontSize = ("small");
+        MTypeCell3.style.fontWeight = ("bold");
+        MTypeCell3.setAttribute("id", "MTypeCell3");
+
+
+        if (M4Type != 0) {
+          MTypeCell4.style.background = typeColors[M4Type][0];
+          cellText = document.createTextNode(capitalize(M4Type));
+        } else {
+          MTypeCell4.style.background = "white";
+          cellText = document.createTextNode(" ");
+        }
+        MTypeCell4.appendChild(cellText);
+        MTypeCell4.style.fontSize = movesSize + "em";
+        MTypeCell4.style.textAlign = ("center");
+        MTypeCell4.style.border = "solid green";
+        MTypeCell4.style.padding = "5px";
+        MTypeCell4.style.fontSize = ("small");
+        MTypeCell4.style.fontWeight = ("bold");
+        MTypeCell4.setAttribute("id", "MTypeCell4");
+
+        //first move
+        var cellText = document.createTextNode(capitalize(String(mapper.properties.player.team[0].move1).toLowerCase()));
+        var Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        MCell1.style.fontSize = "0.8em";
+        MCell1.appendChild(Bold);
+        MRow1.appendChild(MCell1);
+        cellText = document.createTextNode(mapper.properties.player.team[0].move1pp + "/" + M1MaxPP);
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        MCell1PP.style.fontSize = "1em";
+        MCell1PP.appendChild(Bold);
+        MRow1.appendChild(MTypeCell1);
+        MRow1.appendChild(MCell1PP);
+
+
+
+        //second move
+        if (mapper.properties.player.team[0].move2.value != null) {
+          cellText = document.createTextNode(capitalize(String(mapper.properties.player.team[0].move2).toLowerCase()));
+        } else {
+          cellText = document.createTextNode(' ');
+        }
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        MCell2.style.fontSize = "0.8em";
+        MCell2.appendChild(Bold);
+        MRow1.appendChild(MCell2);
+        if (mapper.properties.player.team[0].move2.value != null) {
+          cellText = document.createTextNode(mapper.properties.player.team[0].move2pp + "/" + M2MaxPP);
+        } else {
+          cellText = document.createTextNode(' ');
+        }
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        MCell2PP.style.fontSize = "1em";
+        MCell2PP.appendChild(Bold);
+        MRow1.appendChild(MTypeCell2);
+        MRow1.appendChild(MCell2PP);
+
+        //third move
+        if (mapper.properties.player.team[0].move3.value != null) {
+          cellText = document.createTextNode(capitalize(String(mapper.properties.player.team[0].move3).toLowerCase()));
+        } else {
+          cellText = document.createTextNode(' ');
+        }
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        MCell3.style.fontSize = "0.8em";
+        MCell3.appendChild(Bold);
+        MRow2.appendChild(MCell3);
+        if (mapper.properties.player.team[0].move3.value != null) {
+          cellText = document.createTextNode(mapper.properties.player.team[0].move3pp + "/" + M3MaxPP);
+        } else {
+          cellText = document.createTextNode('');
+        }
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        MCell3PP.style.fontSize = "1em";
+        MCell3PP.appendChild(Bold);
+        MRow2.appendChild(MTypeCell3);
+        MRow2.appendChild(MCell3PP);
+
+        //fourth move
+        if (mapper.properties.player.team[0].move4.value != null) {
+          cellText = document.createTextNode(capitalize(String(mapper.properties.player.team[0].move4).toLowerCase()));
+        } else {
+          cellText = document.createTextNode(' ');
+        }
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        MCell4.style.fontSize = "0.8em";
+        MCell4.appendChild(Bold);
+        MRow2.appendChild(MCell4);
+        if (mapper.properties.player.team[0].move4.value != null) {
+          cellText = document.createTextNode(mapper.properties.player.team[0].move4pp + "/" + M4MaxPP);
+        } else {
+          cellText = document.createTextNode('');
+        }
+        Bold = document.createElement("b");
+        Bold.appendChild(cellText);
+        MCell4PP.style.fontSize = "1em";
+        MCell4PP.appendChild(Bold);
+        MRow2.appendChild(MTypeCell4);
+        MRow2.appendChild(MCell4PP);
+
+        MtblBody.appendChild(MRow1);
+        MtblBody.appendChild(MRow2);
+        MTable.appendChild(MtblBody);
+        MTable.style.position = "absolute";
+        MTable.style.left = "330px";
+        MTable.style.bottom = "10px";
+        MTable.style.zoom = "1.8";
+        MTable.style.borderCollapse = 'collapse';
+        document.body.appendChild(MTable);
+      } 
+    </script>
+</body>

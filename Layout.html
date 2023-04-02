@@ -220,7 +220,7 @@
           document.getElementById("currentMove2").innerHTML = capitalize(String(mapper.properties.player.team[0].move2).toLowerCase());
           document.getElementById("currentMove2PP").innerHTML = mapper.properties.player.team[0].move2pp + "/" + M2MaxPP;
           document.getElementById("MTypeCell2").innerHTML = capitalize(M2Type);
-          MTypeCell3.style.background = typeColors[M3Type][0]
+          MTypeCell3.style.background = typeColors[M2Type][0]
         })
         mapper.properties.player.team[0].move2pp.change(async (x) => {
           if (mapper.properties.player.team[0].move2.value == null) {

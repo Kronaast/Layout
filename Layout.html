@@ -2,7 +2,7 @@
 <script>
   // If you want to use the layout with another pokemon change this variable
   // the pokemon name must be all lower case
-  let pokemonName = "torchic";
+  let pokemonName = "mewtwo";
   // If you want to change the layout to another generation change the next two variables,
   // they must be congruent, it will not work if you put "emerald" and "generation-i" for example
 
@@ -21,9 +21,9 @@
   // false if you don't want the pokemon sprite in the layout is useful if you want to use another image 
   // "auto" if you want the pokemon image to be the sprite for the game you are playing
   // "manual" if you want to use a custom image, this image has to be placed in the "Pictures" folder and has to be called "Pokemon.png"
-  let enableImg = "auto";
+  let enableImg = "manual";
   // can't get the moves table dimensions correct auto so you have to tweak this value a bit
-  let movesZoom = "0.6";
+  let movesZoom = "0.5";
   let statsZoom = "1.1";
   // YOU DON'T NEED TO TOUCH THE NEXT VARIABLES,
   // IF YOU DO IT'S AT YOUR OWN RISK
@@ -1258,16 +1258,19 @@
         var M2MaxPP = "0";
         var M3MaxPP = "0";
         var M4MaxPP = "0";
-        var M1Type = "grass";
+        var M1Type = "0";
         var M2Type = "0";
         var M3Type = "0";
         var M4Type = "0";
         for (var i = 0; i < savedMoves.length; i++) {
           var mov1 = ((String(mapper.properties.player.team[0].move1.value).toLowerCase()).replaceAll(' ', '-'));
 
-          if (savedMoves[i].name == mov1) {
-            M1MaxPP = savedMoves[i].pp;
-            M1Type = savedMoves[i].type.name;
+          if (mapper.properties.player.team[0].move1.value != null) {
+            var mov1 = ((String(mapper.properties.player.team[0].move1.value).toLowerCase()).replaceAll(' ', '-'));
+            if (savedMoves[i].name == mov1) {
+              M1MaxPP = savedMoves[i].pp;
+              M1Type = savedMoves[i].type.name;
+            }
           }
           if (mapper.properties.player.team[0].move2.value != null) {
             var mov2 = ((String(mapper.properties.player.team[0].move2.value).toLowerCase()).replaceAll(' ', '-'));
@@ -1386,15 +1389,22 @@
 
 
         // Cell for the move type
-        cellText = document.createTextNode(capitalize(M1Type));
+        if (M1Type != 0) {
+          MTypeCell1.style.background = typeColors[M1Type][0];
+          cellText = document.createTextNode(capitalize(M1Type));
+        } else {
+          MTypeCell1.style.background = "white";
+          cellText = document.createTextNode(" ");
+        }
+        
         MTypeCell1.appendChild(cellText);
-        MTypeCell1.style.background = typeColors[M1Type][0];
         MTypeCell1.style.fontSize = movesSize + "em";
         MTypeCell1.style.textAlign = ("center");
         MTypeCell1.style.border = "solid green";
         MTypeCell1.style.padding = "5px";
         MTypeCell1.style.fontSize = ("small");
         MTypeCell1.style.fontWeight = ("bold");
+        MTypeCell1.style.width = "40px";
         MTypeCell1.setAttribute("id", "MTypeCell1");
 
 
@@ -1412,6 +1422,7 @@
         MTypeCell2.style.padding = "5px";
         MTypeCell2.style.fontSize = ("small");
         MTypeCell2.style.fontWeight = ("bold");
+        MTypeCell2.style.width = "40px";
         MTypeCell2.setAttribute("id", "MTypeCell2");
 
 
@@ -1429,6 +1440,7 @@
         MTypeCell3.style.padding = "5px";
         MTypeCell3.style.fontSize = ("small");
         MTypeCell3.style.fontWeight = ("bold");
+        MTypeCell3.style.width = "40px";
         MTypeCell3.setAttribute("id", "MTypeCell3");
 
 
@@ -1446,24 +1458,31 @@
         MTypeCell4.style.padding = "5px";
         MTypeCell4.style.fontSize = ("small");
         MTypeCell4.style.fontWeight = ("bold");
+        MTypeCell4.style.width = "40px";
         MTypeCell4.setAttribute("id", "MTypeCell4");
 
         //first move
-        var cellText = document.createTextNode(capitalize(String(mapper.properties.player.team[0].move1).toLowerCase()));
+        if (mapper.properties.player.team[0].move1.value != null) {
+          cellText = document.createTextNode(capitalize(String(mapper.properties.player.team[0].move1).toLowerCase()));
+        } else {
+          cellText = document.createTextNode(' ');
+        }
         var Bold = document.createElement("b");
         Bold.appendChild(cellText);
         MCell1.style.fontSize = "0.8em";
         MCell1.appendChild(Bold);
         MRow1.appendChild(MCell1);
-        cellText = document.createTextNode(mapper.properties.player.team[0].move1pp + "/" + M1MaxPP);
+        if (mapper.properties.player.team[0].move1.value != null) {
+          cellText = document.createTextNode(mapper.properties.player.team[0].move1pp + "/" + M1MaxPP);
+        } else {
+          cellText = document.createTextNode(' ');
+        }
         Bold = document.createElement("b");
         Bold.appendChild(cellText);
         MCell1PP.style.fontSize = "1em";
         MCell1PP.appendChild(Bold);
         MRow1.appendChild(MTypeCell1);
         MRow1.appendChild(MCell1PP);
-
-
 
         //second move
         if (mapper.properties.player.team[0].move2.value != null) {

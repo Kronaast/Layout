@@ -810,6 +810,8 @@
 
         var ability = mapper.properties.battle.yourPokemon.ability;
         var nature = Natures[mapper.properties.player.team[0].nature][0];
+        var species = mapper.properties.player.team[0].species;
+        console.log(species);
         var item = mapper.properties.player.team[0].itemHeld;
         var ite = ((String(item).toLowerCase()).replaceAll(' ', '-'));
         var abilityDiv = document.createElement("div");
@@ -825,7 +827,7 @@
           var abilityText = document.createTextNode("Ability: " + capitalize(String(ability).toLowerCase()));
         }
         console.log(nature);
-        if (nature == null) {
+        if (species.value == null) {
           var natureText = document.createTextNode("Nature: ");
         } else {
           var natureText = document.createTextNode("Nature: " + nature);

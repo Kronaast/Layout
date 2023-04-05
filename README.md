@@ -16,3 +16,7 @@ all the variables must be all lower case
 Known Bugs/limitations:
 - PP ups are not counted, will fix it in the future
 - The layout does not work if you change pokemon
+- The layout is using the newer amount of pp for moves (barrier is 30 pp in emerald, 20 past x/y)
+
+Future developments:
+- PP ups handling

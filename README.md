@@ -20,3 +20,12 @@ Known Bugs/limitations:
 
 Future developments:
 - PP ups handling
+- dispay IV/EV
+- display current location
+- indicator for physical or special move 
+
+Future code improvements:
+- moving style part to css
+- moving print stuff to functions
+- more comments
+- function contracts

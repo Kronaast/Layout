@@ -1,7 +1,7 @@
 # Layout
 Hello everybody, this is the layout i developed for my videos,
 
-for more in detail explanation please watch this video: 
+for more in detail explanation please watch this video: https://youtu.be/mAuMHT9-b20
 
 Assuming that i did not select the wrong license you are free to download the code and edit it yourself and/or use it in any way you want, you can republish it too but at least change a few things.
 

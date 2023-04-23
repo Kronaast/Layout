@@ -189,6 +189,7 @@
         mapper.properties.player.team[0].speed.change(async (x) => {
           document.getElementById("currentSpeed").innerHTML = mapper.properties.player.team[0].speed;
         })
+
         mapper.properties.player.team[0].itemHeld.change(async (x) => {
           item = mapper.properties.player.team[0].itemHeld;
           itemImg.src = 'Pictures/Blank.png';
@@ -200,8 +201,9 @@
             document.getElementById("currentItem").innerHTML = capitalize(String(mapper.properties.player.team[0].itemHeld).toLowerCase());
             itemImg.src = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/' + ite + '.png';
           }
-          document.getElementById("currentItemImg").innerHTML = itemImg;
+          document.getElementById("currentItemImg").innerHTML.src = itemImg.src;
         })
+
         mapper.properties.player.team[0].move1.change(async (x) => {
           for (var i = 0; i < savedMoves.length; i++) {
             mov1 = ((String(mapper.properties.player.team[0].move1.value).toLowerCase()).replaceAll(' ', '-'));
@@ -873,7 +875,7 @@
         } else {
           var natureText = document.createTextNode("Nature: " + nature);
         }
-
+        
         if (item.value == null) {
           itemImg.src = 'Pictures/Blank.png';
           var itemText = document.createTextNode('');

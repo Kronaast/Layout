@@ -48,6 +48,25 @@
     'ultra-sun-ultra-moon': 'generation-vii'
   };
 
+  let gameGenNum = {
+    'red-blue': 1,
+    yellow: 1,
+    crystal: 2,
+    gold: 2,
+    silver: 2,
+    'ruby-sapphire': 2,
+    emerald: 3,
+    'firered-leafgreen': 3,
+    'diamond-pearl': 4,
+    'heartgold-soulsilver': 4,
+    'platinum': 4,
+    'black-white': 5,
+    'omegaruby-alphasapphire': 6,
+    'x-y': 6,
+    icons: 7,
+    'ultra-sun-ultra-moon': 7,
+  };
+
   let generation = gameGen[game];
   let firstGens = ['generation-i', 'generation-ii', 'generation-iii', 'generation-iv', 'generation-v'];
   let typeColors = {
@@ -143,7 +162,6 @@
         return word[0].toUpperCase() + word.slice(1);
       }
 
-
       async function generateLayout() {
         var mapper = new GameHookMapperClient();
         // Establish a connection to GameHook.
@@ -170,16 +188,8 @@
         })
         mapper.properties.player.team[0].speed.change(async (x) => {
           document.getElementById("currentSpeed").innerHTML = mapper.properties.player.team[0].speed;
-        })
-        //not sure if this is needed
-        mapper.properties.battle.yourPokemon.ability.change(async (x) => {
-          document.getElementById("currentAbility").innerHTML = "Ability: " + capitalize(String(mapper.properties.battle.yourPokemon.ability).toLowerCase());
-        })
-        mapper.properties.player.team[0].nature.change(async (x) => {
-          document.getElementById("currentNature").innerHTML = "Natures: " + Natures[mapper.properties.player.team[0].nature][0];
-        })
+        })      
         mapper.properties.player.team[0].itemHeld.change(async (x) => {
-
           item = mapper.properties.player.team[0].itemHeld;
           ite = ((String(item).toLowerCase()).replaceAll(' ', '-'));
           if (mapper.properties.player.team[0].itemHeld.value == null) {
@@ -196,6 +206,7 @@
             mov1 = ((String(mapper.properties.player.team[0].move1.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov1) {
               M1MaxPP = savedMoves[i].pp;
+              M1MaxPPBase = M1MaxPP;
               M1Type = savedMoves[i].type.name;
             }
           }
@@ -213,14 +224,14 @@
             mov2 = ((String(mapper.properties.player.team[0].move2.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov2) {
               M2MaxPP = savedMoves[i].pp;
+              M2MaxPPBase = M2MaxPP;
               M2Type = savedMoves[i].type.name;
             }
           }
-          
           document.getElementById("currentMove2").innerHTML = capitalize(String(mapper.properties.player.team[0].move2).toLowerCase());
           document.getElementById("currentMove2PP").innerHTML = mapper.properties.player.team[0].move2pp + "/" + M2MaxPP;
           document.getElementById("MTypeCell2").innerHTML = capitalize(M2Type);
-          MTypeCell3.style.background = typeColors[M2Type][0]
+          MTypeCell2.style.background = typeColors[M2Type][0]
         })
         mapper.properties.player.team[0].move2pp.change(async (x) => {
           if (mapper.properties.player.team[0].move2.value == null) {
@@ -234,6 +245,7 @@
             mov3 = ((String(mapper.properties.player.team[0].move3.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov3) {
               M3MaxPP = savedMoves[i].pp;
+              M3MaxPPBase = M3MaxPP;
               M3Type = savedMoves[i].type.name;
             }
           }
@@ -254,6 +266,7 @@
             mov4 = ((String(mapper.properties.player.team[0].move4.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov4) {
               M4MaxPP = savedMoves[i].pp;
+              M4MaxPPBase = M4MaxPP;
               M4Type = savedMoves[i].type.name;
             }
           }
@@ -270,6 +283,14 @@
             document.getElementById("currentMove4PP").innerHTML = mapper.properties.player.team[0].move4pp + "/" + M4MaxPP;
           }
         })
+        mapper.properties.player.team[0].move1ppUp.change(async (x) => {
+          M1MaxPP = M1MaxPPBase + ((M1MaxPPBase/5)*mapper.properties.player.team[0].move1ppUp);
+        })
+
+
+
+
+
 
         let httpRequest = new XMLHttpRequest();
         var xhttp = new XMLHttpRequest();
@@ -416,18 +437,16 @@
         //Nature Stuff
         tdN = document.createElement("td");
         var img = document.createElement("img");
-        if (Natures[mapper.properties.player.team[0].nature][1] == "Attack") {
+        img.setAttribute("id", "natureAtk");
+        if (Natures[mapper.properties.player.team[0].nature][1] == "Attack") {        
           img.src = ('Pictures/UP.png');
-          img.style.width = '20px';
-          img.style.height = '20px';
-          tdN.appendChild(img);
         }
         if (Natures[mapper.properties.player.team[0].nature][2] == "Attack") {
           img.src = ('Pictures/DOWN.png');
-          img.style.width = '20px';
-          img.style.height = '20px';
-          tdN.appendChild(img);
         }
+        img.style.width = '20px';
+        img.style.height = '20px';
+        tdN.appendChild(img);
         tdN.style.width = '20px';
         tdN.style.display = 'flex';
         tdN.style.justifyContent = 'center';
@@ -479,18 +498,16 @@
         //Nature Stuff
         tdN = document.createElement("td");
         var img = document.createElement("img");
+        img.setAttribute("id", "natureDef");
         if (Natures[mapper.properties.player.team[0].nature][1] == "Defense") {
           img.src = ('Pictures/UP.png');
-          img.style.width = '20px';
-          img.style.height = '20px';
-          tdN.appendChild(img);
         }
         if (Natures[mapper.properties.player.team[0].nature][2] == "Defense") {
           img.src = ('Pictures/DOWN.png');
-          img.style.width = '20px';
-          img.style.height = '20px';
-          tdN.appendChild(img);
         }
+        img.style.width = '20px';
+        img.style.height = '20px';
+        tdN.appendChild(img);
         tdN.style.width = '20px';
         tdN.style.display = 'flex';
         tdN.style.justifyContent = 'center';
@@ -542,18 +559,16 @@
         //Nature Stuff
         tdN = document.createElement("td");
         var img = document.createElement("img");
+        img.setAttribute("id", "natureSpAtk");
         if (Natures[mapper.properties.player.team[0].nature][1] == "SpecialAttack") {
           img.src = ('Pictures/UP.png');
-          img.style.width = '20px';
-          img.style.height = '20px';
-          tdN.appendChild(img);
         }
         if (Natures[mapper.properties.player.team[0].nature][2] == "SpecialAttack") {
           img.src = ('Pictures/DOWN.png');
-          img.style.width = '20px';
-          img.style.height = '20px';
-          tdN.appendChild(img);
         }
+        img.style.width = '20px';
+        img.style.height = '20px';
+        tdN.appendChild(img);
         tdN.style.width = '20px';
         tdN.style.display = 'flex';
         tdN.style.justifyContent = 'center';
@@ -605,18 +620,16 @@
         //Nature Stuff
         tdN = document.createElement("td");
         var img = document.createElement("img");
+        img.setAttribute("id", "natureSpDef");
         if (Natures[mapper.properties.player.team[0].nature][1] == "SpecialDefense") {
-          img.src = ('Pictures/UP.png');
-          img.style.width = '20px';
-          img.style.height = '20px';
-          tdN.appendChild(img);
+          img.src = ('Pictures/UP.png');  
         }
         if (Natures[mapper.properties.player.team[0].nature][2] == "SpecialDefense") {
           img.src = ('Pictures/DOWN.png');
-          img.style.width = '20px';
-          img.style.height = '20px';
-          tdN.appendChild(img);
         }
+        img.style.width = '20px';
+        img.style.height = '20px';
+        tdN.appendChild(img);
         tdN.style.width = '20px';
         tdN.style.display = 'flex';
         tdN.style.justifyContent = 'center';
@@ -668,18 +681,16 @@
         //Nature Stuff
         tdN = document.createElement("td");
         var img = document.createElement("img");
+        img.setAttribute("id", "natureSpeed");
         if (Natures[mapper.properties.player.team[0].nature][1] == "Speed") {
-          img.src = ('Pictures/UP.png');
-          img.style.width = '20px';
-          img.style.height = '20px';
-          tdN.appendChild(img);
+          img.src = ('Pictures/UP.png');          
         }
         if (Natures[mapper.properties.player.team[0].nature][2] == "Speed") {
           img.src = ('Pictures/DOWN.png');
-          img.style.width = '20px';
-          img.style.height = '20px';
-          tdN.appendChild(img);
         }
+        img.style.width = '20px';
+        img.style.height = '20px';
+        tdN.appendChild(img);
         tdN.style.width = '20px';
         tdN.style.display = 'flex';
         tdN.style.justifyContent = 'center';
@@ -1256,10 +1267,14 @@
         // appends <table> into <body>
         document.body.appendChild(div);
 
-        var M1MaxPP = "0";
-        var M2MaxPP = "0";
+        var M1MaxPP = "0";       
+        var M2MaxPP = "0"; 
         var M3MaxPP = "0";
         var M4MaxPP = "0";
+        var M1MaxPPBase = "0";
+        var M2MaxPPBase = "0";
+        var M3MaxPPBase = "0";
+        var M4MaxPPBase = "0";
         var M1Type = "0";
         var M2Type = "0";
         var M3Type = "0";
@@ -1271,6 +1286,7 @@
             var mov1 = ((String(mapper.properties.player.team[0].move1.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov1) {
               M1MaxPP = savedMoves[i].pp;
+              M1MaxPPBase = M1MaxPP;
               M1Type = savedMoves[i].type.name;
             }
           }
@@ -1278,6 +1294,7 @@
             var mov2 = ((String(mapper.properties.player.team[0].move2.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov2) {
               M2MaxPP = savedMoves[i].pp;
+              M2MaxPPBase = M2MaxPP;
               M2Type = savedMoves[i].type.name;
             }
           }
@@ -1285,6 +1302,7 @@
             var mov3 = ((String(mapper.properties.player.team[0].move3.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov3) {
               M3MaxPP = savedMoves[i].pp;
+              M3MaxPPBase = M3MaxPP;
               M3Type = savedMoves[i].type.name;
             }
           }
@@ -1292,11 +1310,11 @@
             var mov4 = ((String(mapper.properties.player.team[0].move4.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov4) {
               M4MaxPP = savedMoves[i].pp;
+              M4MaxPPBase = M4MaxPP;
               M4Type = savedMoves[i].type.name;
             }
           }
         }
-
 
         var MTable = document.createElement("table");
         var MtblBody = document.createElement("tbody");
@@ -1391,7 +1409,7 @@
 
 
         // Cell for the move type
-        if (M1Type != 0) {
+        if (M1Type != 0 && M1Type != null) {
           MTypeCell1.style.background = typeColors[M1Type][0];
           cellText = document.createTextNode(capitalize(M1Type));
         } else {
@@ -1410,7 +1428,7 @@
         MTypeCell1.setAttribute("id", "MTypeCell1");
 
 
-        if (M2Type != 0) {
+        if (M2Type != 0 && M2Type != null) {
           MTypeCell2.style.background = typeColors[M2Type][0];
           cellText = document.createTextNode(capitalize(M2Type));
         } else {
@@ -1428,7 +1446,7 @@
         MTypeCell2.setAttribute("id", "MTypeCell2");
 
 
-        if (M3Type != 0) {
+        if (M3Type != 0 && M3Type != null) {
           MTypeCell3.style.background = typeColors[M3Type][0];
           cellText = document.createTextNode(capitalize(M3Type));
         } else {
@@ -1446,7 +1464,7 @@
         MTypeCell3.setAttribute("id", "MTypeCell3");
 
 
-        if (M4Type != 0) {
+        if (M4Type != 0 && M4Type != null) {
           MTypeCell4.style.background = typeColors[M4Type][0];
           cellText = document.createTextNode(capitalize(M4Type));
         } else {

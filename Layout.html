@@ -191,6 +191,7 @@
         })
         mapper.properties.player.team[0].itemHeld.change(async (x) => {
           item = mapper.properties.player.team[0].itemHeld;
+          itemImg.src = 'Pictures/Blank.png';
           ite = ((String(item).toLowerCase()).replaceAll(' ', '-'));
           if (mapper.properties.player.team[0].itemHeld.value == null) {
             document.getElementById("currentItem").innerHTML = "";
@@ -199,7 +200,7 @@
             document.getElementById("currentItem").innerHTML = capitalize(String(mapper.properties.player.team[0].itemHeld).toLowerCase());
             itemImg.src = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/' + ite + '.png';
           }
-          document.getElementById("currentItemImg").innerHTML = ItemImg;
+          document.getElementById("currentItemImg").innerHTML = itemImg;
         })
         mapper.properties.player.team[0].move1.change(async (x) => {
           for (var i = 0; i < savedMoves.length; i++) {
@@ -215,8 +216,7 @@
           document.getElementById("MTypeCell1").innerHTML = capitalize(M1Type);
           MTypeCell1.style.background = typeColors[M1Type][0]
 
-          if (mapper.properties.player.team[0].move1.value == null){
-            console.log(mapper.properties.player.team[0].move1);
+          if (mapper.properties.player.team[0].move1.value == null){;
             document.getElementById("currentMove1").innerHTML = "";
             document.getElementById("currentMove1PP").innerHTML = "";
             document.getElementById("MTypeCell1").innerHTML = "";
@@ -241,7 +241,6 @@
           MTypeCell2.style.background = typeColors[M2Type][0]
 
           if (mapper.properties.player.team[0].move2.value == null){
-            console.log(mapper.properties.player.team[0].move2);
             document.getElementById("currentMove2").innerHTML = "";
             document.getElementById("currentMove2PP").innerHTML = "";
             document.getElementById("MTypeCell2").innerHTML = "";
@@ -272,7 +271,6 @@
           MTypeCell3.style.background = typeColors[M3Type][0]
 
           if (mapper.properties.player.team[0].move3.value == null){
-            console.log(mapper.properties.player.team[0].move3);
             document.getElementById("currentMove3").innerHTML = "";
             document.getElementById("currentMove3PP").innerHTML = "";
             document.getElementById("MTypeCell3").innerHTML = "";
@@ -303,7 +301,6 @@
           MTypeCell4.style.background = typeColors[M4Type][0];
 
           if (mapper.properties.player.team[0].move4.value == null){
-            console.log(mapper.properties.player.team[0].move4);
             document.getElementById("currentMove4").innerHTML = "";
             document.getElementById("currentMove4PP").innerHTML = "";
             document.getElementById("MTypeCell4").innerHTML = "";
@@ -857,7 +854,6 @@
         var ability = mapper.properties.battle.yourPokemon.ability;
         var nature = Natures[mapper.properties.player.team[0].nature][0];
         var species = mapper.properties.player.team[0].species;
-        console.log(species);
         var item = mapper.properties.player.team[0].itemHeld;
         var ite = ((String(item).toLowerCase()).replaceAll(' ', '-'));
         var abilityDiv = document.createElement("div");
@@ -872,7 +868,6 @@
         } else {
           var abilityText = document.createTextNode("Ability: " + capitalize(String(ability).toLowerCase()));
         }
-        console.log(nature);
         if (species.value == null) {
           var natureText = document.createTextNode("Nature: ");
         } else {

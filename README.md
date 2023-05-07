@@ -14,12 +14,12 @@ all the variables must be all lower case
 - both the pokemon iamge if set to manual and the background image can be customized by overwriting the ones already present in the Pictures folder
 
 Known Bugs/limitations:
-- PP ups are not counted, will fix it in the future (should be fixed)
+x PP ups are not counted, will fix it in the future (should be fixed, needs more testing)
 - The layout does not work if you change pokemon mid-run
-- The layout is using the newer amount of pp for moves (barrier is 30 pp in emerald, 20 past x/y)
+x The layout is using the newer amount of pp for moves (barrier is 30 pp in emerald, 20 past x/y) (should be fixed, needs more testing)
 
 Future developments:
-- PP ups handling
+x PP ups handling
 - dispay IV/EV
 - display current location
 - indicator for physical or special move 

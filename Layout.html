@@ -332,6 +332,15 @@
         mapper.properties.player.team[0].move1ppUp.change(async (x) => {
           M1MaxPP = M1MaxPPBase + ((M1MaxPPBase / 5) * mapper.properties.player.team[0].move1ppUp);
         })
+        mapper.properties.player.team[0].move2ppUp.change(async (x) => {
+          M2MaxPP = M2MaxPPBase + ((M2MaxPPBase / 5) * mapper.properties.player.team[0].move2ppUp);
+        })
+        mapper.properties.player.team[0].move3ppUp.change(async (x) => {
+          M3MaxPP = M3MaxPPBase + ((M3MaxPPBase / 5) * mapper.properties.player.team[0].move3ppUp);
+        })
+        mapper.properties.player.team[0].move4ppUp.change(async (x) => {
+          M4MaxPP = M4MaxPPBase + ((M4MaxPPBase / 5) * mapper.properties.player.team[0].move4ppUp);
+        })
         mapper.properties.battle.yourPokemon.ability.change(async (x) => {
         if (mapper.properties.battle.yourPokemon.ability.value == null) {
             document.getElementById("currentAbility").innerHTML = "Ability: ";

@@ -2,7 +2,7 @@
 <script>
   // If you want to use the layout with another pokemon change this variable
   // the pokemon name must be all lower case
-  let pokemonName = "torchic";
+  let pokemonName = "mewtwo";
   // If you want to change the layout to another generation change the next two variables,
   // they must be congruent, it will not work if you put "emerald" and "generation-i" for example
 
@@ -21,7 +21,7 @@
   // false if you don't want the pokemon sprite in the layout is useful if you want to use another image 
   // "auto" if you want the pokemon image to be the sprite for the game you are playing
   // "manual" if you want to use a custom image, this image has to be placed in the "Pictures" folder and has to be called "Pokemon.png"
-  let enableImg = "manual";
+  let enableImg = "auto";
   // can't get the moves table dimensions correct auto so you have to tweak this value a bit
   let movesZoom = "0.5";
   let statsZoom = "1.1";
@@ -320,10 +320,13 @@
         mapper.properties.player.team[0].move1ppUp.change(async (x) => {
           M1MaxPP = M1MaxPPBase + ((M1MaxPPBase / 5) * mapper.properties.player.team[0].move1ppUp);
         })
-
-
-
-
+        mapper.properties.battle.yourPokemon.ability.change(async (x) => {
+        if (mapper.properties.battle.yourPokemon.ability.value == null) {
+            document.getElementById("currentAbility").innerHTML = "Ability: ";
+        } else {
+            document.getElementById("currentAbility").innerHTML = "Ability: " + capitalize(String(mapper.properties.battle.yourPokemon.ability.value).toLowerCase());
+        }
+        })
 
 
         let httpRequest = new XMLHttpRequest();

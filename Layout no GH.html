@@ -2,7 +2,7 @@
 <script>
   // If you want to use the layout with another pokemon change this variable
   // the pokemon name must be all lower case
-  let pokemonName = "azumarill";
+  let pokemonName = "marill";
   // If you want to change the layout to another generation change the next two variables,
   // they must be congruent, it will not work if you put "emerald" and "generation-i" for example
 
@@ -199,24 +199,16 @@
         return word[0].toUpperCase() + word.slice(1);
       }
 
-      const mapper = new GameHookMapperClient()
 
       async function generateLayout() {
         // Establish a connection to GameHook.
-        await mapper.connect()
+        
         
         // You can then access properties you see in GameHook via mapper.properties.
-        const prop = mapper.properties.player.name;
-        console.info(`Your name is ${mapper.properties.player.name}.`)
+        
       
         app.style.zoom = "2";
 
-        let httpRequest = new XMLHttpRequest();
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "https://pokeapi.co/api/v2/pokemon/" + pokemonName, false);
-        xhttp.send();
-        var json = xhttp.responseText;
-        const obj = JSON.parse(json);
 
         var baseHP = obj.stats[0].base_stat;
         var baseAttack = obj.stats[1].base_stat;

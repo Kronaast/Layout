@@ -209,6 +209,9 @@
             mov1 = ((String(mapper.properties.player.team[0].move1.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov1) {
               M1MaxPP = savedMoves[i].pp;
+              if(savedMoves[i].past_values.length > 0 && gameGenNum[savedMoves[i].past_values[0].version_group.name] > gameGenNum[game] && savedMoves[i].past_values[0].pp != null){
+                M1MaxPP = savedMoves[i].past_values[0].pp;
+              }
               M1MaxPPBase = M1MaxPP;
               M1Type = savedMoves[i].type.name;
             }
@@ -233,6 +236,9 @@
             mov2 = ((String(mapper.properties.player.team[0].move2.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov2) {
               M2MaxPP = savedMoves[i].pp;
+              if(savedMoves[i].past_values.length > 0 && gameGenNum[savedMoves[i].past_values[0].version_group.name] > gameGenNum[game] && savedMoves[i].past_values[0].pp != null){
+                M2MaxPP = savedMoves[i].past_values[0].pp;
+              }
               M2MaxPPBase = M2MaxPP;
               M2Type = savedMoves[i].type.name;
             }
@@ -263,6 +269,9 @@
             mov3 = ((String(mapper.properties.player.team[0].move3.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov3) {
               M3MaxPP = savedMoves[i].pp;
+              if(savedMoves[i].past_values.length > 0 && gameGenNum[savedMoves[i].past_values[0].version_group.name] > gameGenNum[game] && savedMoves[i].past_values[0].pp != null){
+                M3MaxPP = savedMoves[i].past_values[0].pp;
+              }
               M3MaxPPBase = M3MaxPP;
               M3Type = savedMoves[i].type.name;
             }
@@ -293,6 +302,9 @@
             mov4 = ((String(mapper.properties.player.team[0].move4.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov4) {
               M4MaxPP = savedMoves[i].pp;
+              if(savedMoves[i].past_values.length > 0 && gameGenNum[savedMoves[i].past_values[0].version_group.name] > gameGenNum[game] && savedMoves[i].past_values[0].pp != null){
+                M4MaxPP = savedMoves[i].past_values[0].pp;
+              }
               M4MaxPPBase = M4MaxPP;
               M4Type = savedMoves[i].type.name;
             }
@@ -1320,7 +1332,11 @@
           if (mapper.properties.player.team[0].move1.value != null) {
             var mov1 = ((String(mapper.properties.player.team[0].move1.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov1) {
+              console.log(savedMoves[i]);
               M1MaxPP = savedMoves[i].pp;
+              if(savedMoves[i].past_values.length > 0 && gameGenNum[savedMoves[i].past_values[0].version_group.name] > gameGenNum[game] && savedMoves[i].past_values[0].pp != null){
+                M1MaxPP = savedMoves[i].past_values[0].pp;
+              }
               M1MaxPPBase = M1MaxPP;
               M1Type = savedMoves[i].type.name;
             }
@@ -1329,6 +1345,9 @@
             var mov2 = ((String(mapper.properties.player.team[0].move2.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov2) {
               M2MaxPP = savedMoves[i].pp;
+              if(savedMoves[i].past_values.length > 0 && gameGenNum[savedMoves[i].past_values[0].version_group.name] > gameGenNum[game] && savedMoves[i].past_values[0].pp != null){
+                M2MaxPP = savedMoves[i].past_values[0].pp;
+              }
               M2MaxPPBase = M2MaxPP;
               M2Type = savedMoves[i].type.name;
             }
@@ -1337,6 +1356,13 @@
             var mov3 = ((String(mapper.properties.player.team[0].move3.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov3) {
               M3MaxPP = savedMoves[i].pp;
+              console.log('before big if');
+              if(savedMoves[i].past_values.length > 0 && gameGenNum[savedMoves[i].past_values[0].version_group.name] > gameGenNum[game] && savedMoves[i].past_values[0].pp != null){
+                console.log('inside big if');
+                console.log(M3MaxPP);
+                console.log(savedMoves[i].past_values[0].pp);
+                M3MaxPP = savedMoves[i].past_values[0].pp;
+              }
               M3MaxPPBase = M3MaxPP;
               M3Type = savedMoves[i].type.name;
             }
@@ -1345,6 +1371,9 @@
             var mov4 = ((String(mapper.properties.player.team[0].move4.value).toLowerCase()).replaceAll(' ', '-'));
             if (savedMoves[i].name == mov4) {
               M4MaxPP = savedMoves[i].pp;
+              if(savedMoves[i].past_values.length > 0 && gameGenNum[savedMoves[i].past_values[0].version_group.name] > gameGenNum[game] && savedMoves[i].past_values[0].pp != null){
+                M4MaxPP = savedMoves[i].past_values[0].pp;
+              }
               M4MaxPPBase = M4MaxPP;
               M4Type = savedMoves[i].type.name;
             }

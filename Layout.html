@@ -351,10 +351,19 @@
         }
         })
         mapper.properties.player.team[0].level.change(async (x) => {
-          console.log( mapper.properties.player.team[0].level.value);
           document.getElementById("currentLevel").innerHTML = "Level: " + mapper.properties.player.team[0].level.value;
         })
-      
+        mapper.properties.player.team[0].nature.change(async (x) => {
+          console.log("changed nature");
+          document.getElementById("currentNature").innerHTML = "Nature: " + Natures[mapper.properties.player.team[0].nature][0];
+          
+          if (Natures[mapper.properties.player.team[0].nature][1] == "Attack") {
+            document.getElementById("natureAtk").innerHTML.src = ('Pictures/UP.png');
+          }
+          if (Natures[mapper.properties.player.team[0].nature][2] == "Attack") {
+            document.getElementById("natureAtk").innerHTML.src = ('Pictures/DOWN.png');;
+          }
+        })
 
 
         let httpRequest = new XMLHttpRequest();
@@ -903,7 +912,7 @@
         } else {
           var abilityText = document.createTextNode("Ability: " + capitalize(String(ability).toLowerCase()));
         }
-        if (species.value == null) {
+        if (species.value == null && ability.value == null) {
           var natureText = document.createTextNode("Nature: ");
         } else {
           var natureText = document.createTextNode("Nature: " + nature);

@@ -169,6 +169,11 @@
         // Establish a connection to GameHook.
         await mapper.connect();
         var itemImg = document.createElement("img");
+        var imgAtk = document.createElement("img");
+        var imgDef = document.createElement("img");
+        var imgSpAtk = document.createElement("img");
+        var imgSpDef = document.createElement("img");
+        var imgSpd = document.createElement("img");
         //updater section
         mapper.properties.player.team[0].hp.change(async (x) => {
           document.getElementById("currentHP").innerHTML = mapper.properties.player.team[0].hp + "/" + mapper.properties.player.team[0].maxHp;
@@ -203,7 +208,6 @@
             document.getElementById("currentItem").innerHTML = capitalize(String(mapper.properties.player.team[0].itemHeld).toLowerCase());
             itemImg.src = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/' + ite + '.png';
           }
-          document.getElementById("currentItemImg").innerHTML.src = itemImg.src;
         })
 
         mapper.properties.player.team[0].move1.change(async (x) => {
@@ -358,10 +362,34 @@
           document.getElementById("currentNature").innerHTML = "Nature: " + Natures[mapper.properties.player.team[0].nature][0];
           
           if (Natures[mapper.properties.player.team[0].nature][1] == "Attack") {
-            document.getElementById("natureAtk").innerHTML.src = ('Pictures/UP.png');
+            imgAtk.src = ('Pictures/UP.png');
           }
           if (Natures[mapper.properties.player.team[0].nature][2] == "Attack") {
-            document.getElementById("natureAtk").innerHTML.src = ('Pictures/DOWN.png');;
+            imgAtk.src = ('Pictures/DOWN.png');
+          }
+          if (Natures[mapper.properties.player.team[0].nature][1] == "Defense") {
+            imgDef.src = ('Pictures/UP.png');
+          }
+          if (Natures[mapper.properties.player.team[0].nature][2] == "Defense") {
+            imgDef.src = ('Pictures/DOWN.png');
+          }
+          if (Natures[mapper.properties.player.team[0].nature][1] == "SpecialAttack") {
+            imgSpAtk.src = ('Pictures/UP.png');
+          }
+          if (Natures[mapper.properties.player.team[0].nature][2] == "SpecialAttack") {
+            imgSpAtk.src = ('Pictures/DOWN.png');
+          }
+          if (Natures[mapper.properties.player.team[0].nature][1] == "SpecialDefense") {
+            imgSpDef.src = ('Pictures/UP.png');
+          }
+          if (Natures[mapper.properties.player.team[0].nature][2] == "SpecialDefense") {
+            imgSpDef.src = ('Pictures/DOWN.png');
+          }
+          if (Natures[mapper.properties.player.team[0].nature][1] == "Speed") {
+            imgSpd.src = ('Pictures/UP.png');
+          }
+          if (Natures[mapper.properties.player.team[0].nature][2] == "Speed") {
+            imgSpd.src = ('Pictures/DOWN.png');
           }
         })
 
@@ -512,17 +540,15 @@
         trStats.appendChild(td);
         //Nature Stuff
         tdN = document.createElement("td");
-        var img = document.createElement("img");
-        img.setAttribute("id", "natureAtk");
         if (Natures[mapper.properties.player.team[0].nature][1] == "Attack") {
-          img.src = ('Pictures/UP.png');
+          imgAtk.src = ('Pictures/UP.png');
         }
         if (Natures[mapper.properties.player.team[0].nature][2] == "Attack") {
-          img.src = ('Pictures/DOWN.png');
+          imgAtk.src = ('Pictures/DOWN.png');
         }
-        img.style.width = '20px';
-        img.style.height = '20px';
-        tdN.appendChild(img);
+        imgAtk.style.width = '20px';
+        imgAtk.style.height = '20px';
+        tdN.appendChild(imgAtk);
         tdN.style.width = '20px';
         tdN.style.display = 'flex';
         tdN.style.justifyContent = 'center';
@@ -573,17 +599,15 @@
         trStats.appendChild(td);
         //Nature Stuff
         tdN = document.createElement("td");
-        var img = document.createElement("img");
-        img.setAttribute("id", "natureDef");
         if (Natures[mapper.properties.player.team[0].nature][1] == "Defense") {
-          img.src = ('Pictures/UP.png');
+          imgDef.src = ('Pictures/UP.png');
         }
         if (Natures[mapper.properties.player.team[0].nature][2] == "Defense") {
-          img.src = ('Pictures/DOWN.png');
+          imgDef.src = ('Pictures/DOWN.png');
         }
-        img.style.width = '20px';
-        img.style.height = '20px';
-        tdN.appendChild(img);
+        imgDef.style.width = '20px';
+        imgDef.style.height = '20px';
+        tdN.appendChild(imgDef);
         tdN.style.width = '20px';
         tdN.style.display = 'flex';
         tdN.style.justifyContent = 'center';
@@ -634,17 +658,15 @@
         trStats.appendChild(td);
         //Nature Stuff
         tdN = document.createElement("td");
-        var img = document.createElement("img");
-        img.setAttribute("id", "natureSpAtk");
         if (Natures[mapper.properties.player.team[0].nature][1] == "SpecialAttack") {
-          img.src = ('Pictures/UP.png');
+          imgSpAtk.src = ('Pictures/UP.png');
         }
         if (Natures[mapper.properties.player.team[0].nature][2] == "SpecialAttack") {
-          img.src = ('Pictures/DOWN.png');
+          imgSpAtk.src = ('Pictures/DOWN.png');
         }
-        img.style.width = '20px';
-        img.style.height = '20px';
-        tdN.appendChild(img);
+        imgSpAtk.style.width = '20px';
+        imgSpAtk.style.height = '20px';
+        tdN.appendChild(imgSpAtk);
         tdN.style.width = '20px';
         tdN.style.display = 'flex';
         tdN.style.justifyContent = 'center';
@@ -695,17 +717,15 @@
         trStats.appendChild(td);
         //Nature Stuff
         tdN = document.createElement("td");
-        var img = document.createElement("img");
-        img.setAttribute("id", "natureSpDef");
         if (Natures[mapper.properties.player.team[0].nature][1] == "SpecialDefense") {
-          img.src = ('Pictures/UP.png');
+          imgSpDef.src = ('Pictures/UP.png');
         }
         if (Natures[mapper.properties.player.team[0].nature][2] == "SpecialDefense") {
-          img.src = ('Pictures/DOWN.png');
+          imgSpDef.src = ('Pictures/DOWN.png');
         }
-        img.style.width = '20px';
-        img.style.height = '20px';
-        tdN.appendChild(img);
+        imgSpDef.style.width = '20px';
+        imgSpDef.style.height = '20px';
+        tdN.appendChild(imgSpDef);
         tdN.style.width = '20px';
         tdN.style.display = 'flex';
         tdN.style.justifyContent = 'center';
@@ -756,17 +776,15 @@
         trStats.appendChild(td);
         //Nature Stuff
         tdN = document.createElement("td");
-        var img = document.createElement("img");
-        img.setAttribute("id", "natureSpeed");
         if (Natures[mapper.properties.player.team[0].nature][1] == "Speed") {
-          img.src = ('Pictures/UP.png');
+          imgSpd.src = ('Pictures/UP.png');
         }
         if (Natures[mapper.properties.player.team[0].nature][2] == "Speed") {
-          img.src = ('Pictures/DOWN.png');
+          imgSpd.src = ('Pictures/DOWN.png');
         }
-        img.style.width = '20px';
-        img.style.height = '20px';
-        tdN.appendChild(img);
+        imgSpd.style.width = '20px';
+        imgSpd.style.height = '20px';
+        tdN.appendChild(imgSpd);
         tdN.style.width = '20px';
         tdN.style.display = 'flex';
         tdN.style.justifyContent = 'center';
@@ -981,8 +999,6 @@
         itemImgDiv.style.display = "flex";
         itemImgDiv.style.justifyContent = ("center");
         itemImgDiv.style.alignItems = ("center");
-
-        itemImgDiv.setAttribute("id", "currentItemImg");
 
         itemImgDiv.appendChild(itemImg);
         itemDiv.appendChild(itemText);

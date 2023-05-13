@@ -2,7 +2,7 @@
 <script>
   // If you want to use the layout with another pokemon change this variable
   // the pokemon name must be all lower case
-  let pokemonName = "mewtwo";
+  let pokemonName = "dragonite";
   // If you want to change the layout to another generation change the next two variables,
   // they must be congruent, it will not work if you put "emerald" and "generation-i" for example
 
@@ -21,10 +21,11 @@
   // false if you don't want the pokemon sprite in the layout is useful if you want to use another image 
   // "auto" if you want the pokemon image to be the sprite for the game you are playing
   // "manual" if you want to use a custom image, this image has to be placed in the "Pictures" folder and has to be called "Pokemon.png"
-  let enableImg = "auto";
+  let enableImg = "manual";
   // can't get the moves table dimensions correct auto so you have to tweak this value a bit
-  let movesZoom = "0.5";
+  let movesZoom = "0.54";
   let statsZoom = "1.1";
+  let pokemonZoom = "1.2";
   // YOU DON'T NEED TO TOUCH THE NEXT VARIABLES,
   // IF YOU DO IT'S AT YOUR OWN RISK
 
@@ -69,6 +70,7 @@
 
   let generation = gameGen[game];
   let firstGens = ['generation-i', 'generation-ii', 'generation-iii', 'generation-iv', 'generation-v'];
+
   let typeColors = {
     normal: ['#A8A878', '#6D6D4E', '#C8C898'],
     fire: ['#F08030', '#9C531F', '#F0A050'],
@@ -83,11 +85,11 @@
     rock: ['#B8A038', '#786824', '#D8C058'],
     ice: ['#98D8D8', '#638D8D', '#B8F8F8'],
     bug: ['#A8B820', '#6D7815', '#B8C830'],
-    dragon: ['#6D7815', '#4924A1', '#8D9835'],
+    dragon: ['#7038F8', '#4924A1', '#8D9835'],
     ghost: ['#705898', '#493963', '#9078B8'],
     dark: ['#705848', '#49392F', '#907868'],
     steel: ['#B8B8D0', '#787887', '#D8D8F0'],
-    fairy: ['#EE99AC', '#9B6470', '#fEB9CC'],
+    fairy: ['#EE99AC', '#9B6470', '#FEB9CC'],
   };
 
   let Natures = {
@@ -1024,8 +1026,9 @@
             img.style.width = '300px';
             img.style.height = '300px';
             img.style.position = ("absolute");
-            img.style.left = '30px';
-            img.style.top = '5px';
+            img.style.left = '20px';
+            img.style.top = '20px';
+            img.style.zoom = pokemonZoom;
             document.body.appendChild(img);
           }
         }
@@ -1076,7 +1079,7 @@
           typeBox.style.padding = ("5px");
           typeBox.style.display = ("flex");
           typeBox.style.position = ("absolute");
-          typeBox.style.top = "350px";
+          typeBox.style.top = "250px";
           typeBox.style.left = "70px";
           typeBox.style.justifyContent = ("center");
           typeBox.style.width = '10%';
@@ -1103,10 +1106,10 @@
           typeBox.style.padding = ("5px");
           typeBox.style.display = ("flex");
           typeBox.style.position = ("absolute");
-          typeBox.style.top = "300px";
-          typeBox.style.left = "50px";
+          typeBox.style.top = "250px";
+          typeBox.style.left = "30px";
           typeBox.style.justifyContent = ("center");
-          typeBox.style.width = '5%';
+          typeBox.style.width = '7%';
           Bold.appendChild(cellText);
           typeBox.appendChild(Bold);
 
@@ -1117,10 +1120,10 @@
           typeBox2.style.padding = ("5px");
           typeBox2.style.display = ("flex");
           typeBox2.style.position = ("absolute");
-          typeBox2.style.top = "300px";
+          typeBox2.style.top = "250px";
           typeBox2.style.left = "130px";
           typeBox2.style.justifyContent = ("center");
-          typeBox2.style.width = '5%';
+          typeBox2.style.width = '7%';
           Bold2.appendChild(cellText2);
           typeBox2.appendChild(Bold2);
           typeBox.style.zoom = "1.5";

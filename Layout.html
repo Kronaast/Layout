@@ -350,6 +350,11 @@
             document.getElementById("currentAbility").innerHTML = "Ability: " + capitalize(String(mapper.properties.battle.yourPokemon.ability.value).toLowerCase());
         }
         })
+        mapper.properties.player.team[0].level.change(async (x) => {
+          console.log( mapper.properties.player.team[0].level.value);
+          document.getElementById("currentLevel").innerHTML = "Level: " + mapper.properties.player.team[0].level.value;
+        })
+      
 
 
         let httpRequest = new XMLHttpRequest();
@@ -396,6 +401,7 @@
         var trLevel = document.createElement("tr");
         var tdLevel = document.createElement("td");
         var tTextLevel = document.createTextNode("Level: " + level);
+        
         var bLevel = document.createElement("b");
         bLevel.appendChild(tTextLevel);
         var growth = objG.growth_rate.name;
@@ -405,6 +411,7 @@
 
         bGrowth.appendChild(tTextGrowth);
         tdLevel.appendChild(bLevel);
+        tdLevel.setAttribute("id", "currentLevel");
         trLevel.appendChild(tdLevel);
         tdGrowth.appendChild(bGrowth);
         trLevel.appendChild(tdGrowth);
